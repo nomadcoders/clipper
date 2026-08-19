@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import {
   and,
   desc,
@@ -20,16 +22,28 @@ import { getDatabase } from "./db";
 import type {
   AppointmentDetails,
   BookingOption,
+  BookingSlot,
   GroomingPackage,
 } from "./types";
 
-export async function getBookingOptions(): Promise<BookingOption> {
+// TODO: derive real slots from groomer_schedules minus booked appointments.
+// Until then the booking form shows these fixed placeholder arrival times.
+const PLACEHOLDER_SLOTS: BookingSlot[] = [
+  { id: "placeholder-fri-10", startsAt: "2026-08-21T10:00:00Z", label: "10:00 AM" },
+  { id: "placeholder-fri-13", startsAt: "2026-08-21T13:00:00Z", label: "1:00 PM" },
+  { id: "placeholder-sat-11", startsAt: "2026-08-22T11:00:00Z", label: "11:00 AM" },
+  { id: "placeholder-sat-14", startsAt: "2026-08-22T14:00:00Z", label: "2:00 PM" },
+];
+
+export const getBookingOptions = cache(async (): Promise<BookingOption> => {
   const db = getDatabase();
 
-  const packageRows = await db.select().from(groomingPackages);
-  const neighborhoodRows = await db
-    .select({ neighborhood: groomerServiceAreas.neighborhood })
-    .from(groomerServiceAreas);
+  const [packageRows, neighborhoodRows] = await Promise.all([
+    db.select().from(groomingPackages),
+    db
+      .select({ neighborhood: groomerServiceAreas.neighborhood })
+      .from(groomerServiceAreas),
+  ]);
 
   const neighborhoods = [
     ...new Set(neighborhoodRows.map((row) => row.neighborhood)),
@@ -38,12 +52,13 @@ export async function getBookingOptions(): Promise<BookingOption> {
   return {
     packages: packageRows,
     neighborhoods,
+    availableSlots: PLACEHOLDER_SLOTS,
   };
-}
+});
 
-export async function getAppointmentByReference(
+export const getAppointmentByReference = cache(async (
   reference: string,
-): Promise<AppointmentDetails | null> {
+): Promise<AppointmentDetails | null> => {
   const db = getDatabase();
   const rows = await db
     .select({
@@ -74,9 +89,9 @@ export async function getAppointmentByReference(
     createdAt: row.appointment.createdAt.toISOString(),
     updatedAt: row.appointment.updatedAt.toISOString(),
   };
-}
+});
 
-export async function getAppointments(): Promise<AppointmentDetails[]> {
+export const getAppointments = cache(async (): Promise<AppointmentDetails[]> => {
   const db = getDatabase();
   const rows = await db
     .select({
@@ -100,7 +115,7 @@ export async function getAppointments(): Promise<AppointmentDetails[]> {
     createdAt: row.appointment.createdAt.toISOString(),
     updatedAt: row.appointment.updatedAt.toISOString(),
   }));
-}
+});
 
 export async function findAvailableGroomer(
   neighborhood: string,

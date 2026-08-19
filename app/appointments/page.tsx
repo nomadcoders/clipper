@@ -1,28 +1,13 @@
 import Link from "next/link";
 
 import { getAppointments } from "@/lib/clipper/data";
+import { formatDate, formatMoney, formatTime } from "@/lib/clipper/format";
 
 export const dynamic = "force-dynamic";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function formatDate(value: string) {
-  const date = new Date(value);
-  const hours = date.getHours();
-  const suffix = hours >= 12 ? "PM" : "AM";
-  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
-  return `${DAYS[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()} · ${hour12}:${String(date.getMinutes()).padStart(2, "0")} ${suffix}`;
-}
-
-function formatMoney(cents: number) {
-  return `₩${cents.toLocaleString("ko-KR")}`;
-}
-
 export default async function AppointmentsPage() {
   const appointments = await getAppointments();
-  const upcoming = await getAppointments();
-  const upcomingCount = upcoming.filter((appointment) => appointment.status !== "cancelled").length;
+  const upcomingCount = appointments.filter((appointment) => appointment.status !== "cancelled").length;
 
   return (
     <main className="min-h-screen bg-[#f7f9fc] text-[#0a2540]">
@@ -40,7 +25,7 @@ export default async function AppointmentsPage() {
             {appointments.map((appointment) => (
               <Link key={appointment.id} href={`/appointments/${appointment.reference}`} className="grid gap-4 border-b border-[#e6ebf1] p-5 last:border-b-0 hover:bg-[#f7f9fc] sm:grid-cols-[1.25fr_1fr_auto] sm:items-center sm:p-7">
                 <div><p className="text-xl font-bold tracking-[-0.035em]">{appointment.pet.name} · {appointment.package.name}</p><p className="mt-1 text-sm text-[#53627a]">{appointment.neighborhood} · {appointment.groomer?.name ?? "Groomer pending"}</p></div>
-                <div><p className="text-sm font-semibold">{formatDate(appointment.startsAt)}</p><p className="mt-1 text-xs uppercase tracking-[0.1em] text-[#08775d]">{appointment.status}</p></div>
+                <div><p className="text-sm font-semibold">{`${formatDate(appointment.startsAt)} · ${formatTime(appointment.startsAt)}`}</p><p className="mt-1 text-xs uppercase tracking-[0.1em] text-[#08775d]">{appointment.status}</p></div>
                 <div className="flex items-center justify-between gap-5 sm:block sm:text-right"><span className="font-bold">{formatMoney(appointment.priceCents)}</span><span className="ml-4 text-[#635bff]">›</span></div>
               </Link>
             ))}

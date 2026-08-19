@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": ["Bash(npx tsc --noEmit*)"],
+    "deny": [
+      "Bash(npm run deploy*)",
+      "Bash(npx wrangler deploy*)",
+      "Bash(vinext-cloudflare deploy*)",
+      "Bash(* --remote*)"
+    ]
+  }
+}

@@ -1,5 +1,10 @@
 import { PrismaticFlowHome } from "@/components/clipper/home-variants";
+import { getBookingOptions } from "@/lib/clipper/data";
 
-export default function Home() {
-  return <PrismaticFlowHome />;
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const options = await getBookingOptions();
+
+  return <PrismaticFlowHome options={options} />;
 }

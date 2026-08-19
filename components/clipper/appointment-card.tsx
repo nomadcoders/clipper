@@ -1,5 +1,3 @@
-"use client";
-
 import {
   CalendarDays,
   Check,
@@ -11,6 +9,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { formatDate, formatMoney, formatTime } from "@/lib/clipper/format";
 import type { AppointmentDetails } from "@/lib/clipper/types";
 
 type AppointmentCardProps = {
@@ -63,48 +62,6 @@ const statusLabels: Record<string, { label: string; className: string }> = {
   },
 };
 
-const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-function asDate(value: Date | number | string | null | undefined) {
-  if (!value) return null;
-  return value instanceof Date ? value : new Date(value);
-}
-
-function formatDate(value: Date | number | string | null | undefined) {
-  const date = asDate(value);
-  if (!date || Number.isNaN(date.getTime())) return "Date to be confirmed";
-  return `${weekdays[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-}
-
-function formatTime(value: Date | number | string | null | undefined) {
-  const date = asDate(value);
-  if (!date || Number.isNaN(date.getTime())) return "Time to be confirmed";
-  const hour = date.getHours();
-  const minute = date.getMinutes().toString().padStart(2, "0");
-  const meridiem = hour >= 12 ? "PM" : "AM";
-  const twelveHour = hour % 12 || 12;
-  return `${twelveHour}:${minute} ${meridiem}`;
-}
-
-function formatPrice(priceCents: number | null | undefined) {
-  if (typeof priceCents !== "number") return "Price to be confirmed";
-  return `₩${priceCents.toLocaleString("ko-KR")}`;
-}
-
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
   const details = appointment as unknown as DetailsForDisplay;
   const service = details.package ?? details.groomingPackage;
@@ -112,9 +69,9 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
     label: details.status ?? "Booked",
     className: "border-[#cbd8ff] bg-[#eef1ff] text-[#4353a3]",
   };
-  const appointmentDate = formatDate(details.startsAt);
-  const startTime = formatTime(details.startsAt);
-  const endTime = formatTime(details.endsAt);
+  const appointmentDate = formatDate(details.startsAt, "full", "Date to be confirmed");
+  const startTime = formatTime(details.startsAt, "Time to be confirmed");
+  const endTime = formatTime(details.endsAt, "Time to be confirmed");
   const address = details.address ?? "Address to be confirmed";
   const neighborhood = details.neighborhood ? `, ${details.neighborhood}` : "";
   const petName = details.pet?.name ?? "Your pet";
@@ -178,7 +135,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         </div>
         <div className="border-t border-[#e6ebf1] px-5 py-5 sm:border-l sm:border-t-0 sm:px-8 sm:text-right">
           <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#8898aa]">Total</p>
-          <p className="text-3xl font-bold tracking-[-0.04em] text-[#0a2540]">{formatPrice(details.priceCents)}</p>
+          <p className="text-3xl font-bold tracking-[-0.04em] text-[#0a2540]">{formatMoney(details.priceCents, "Price to be confirmed")}</p>
         </div>
       </div>
 
