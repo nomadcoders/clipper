@@ -117,10 +117,27 @@ export const getAppointments = cache(async (): Promise<AppointmentDetails[]> => 
   }));
 });
 
+/** Raw appointment row, for the write paths that need Date objects, not the view model. */
+export async function getAppointmentRowByReference(reference: string) {
+  const db = getDatabase();
+  const [row] = await db
+    .select()
+    .from(appointments)
+    .where(eq(appointments.bookingReference, reference))
+    .limit(1);
+
+  return row ?? null;
+}
+
+/**
+ * `excludeAppointmentId` keeps an appointment from blocking its own reschedule
+ * when the new time overlaps the time it is being moved out of.
+ */
 export async function findAvailableGroomer(
   neighborhood: string,
   startsAt: Date,
   endsAt: Date,
+  excludeAppointmentId?: string,
 ): Promise<string | null> {
   const db = getDatabase();
   const weekday = startsAt.getUTCDay();
@@ -169,6 +186,9 @@ export async function findAvailableGroomer(
         lt(appointments.startsAt, endsAt),
         gt(appointments.endsAt, startsAt),
         ne(appointments.status, "cancelled"),
+        ...(excludeAppointmentId
+          ? [ne(appointments.id, excludeAppointmentId)]
+          : []),
       ),
     );
 

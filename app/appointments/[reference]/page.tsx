@@ -1,16 +1,42 @@
-import { ArrowLeft, ArrowUpRight, Phone } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AppointmentActions } from "@/components/clipper/appointment-actions";
 import { AppointmentCard } from "@/components/clipper/appointment-card";
 import { BookingConfirmation } from "@/components/clipper/booking-confirmation";
-import { getAppointmentByReference } from "@/lib/clipper/data";
+import { isChangeable } from "@/lib/clipper/appointment-changes";
+import { getAppointmentByReference, getBookingOptions } from "@/lib/clipper/data";
+import { formatDate, formatTime } from "@/lib/clipper/format";
+import type { BookingSlot } from "@/lib/clipper/types";
 
 type AppointmentPageProps = {
   params: Promise<{ reference: string }>;
 };
 
 export const dynamic = "force-dynamic";
+
+/**
+ * The booking options still hand back fixed placeholder slots, so drop any that
+ * have gone by and the one this appointment already sits on before offering them.
+ */
+async function getRescheduleSlots(
+  currentStartsAt: string,
+  now: Date,
+): Promise<BookingSlot[]> {
+  const { availableSlots } = await getBookingOptions();
+  const currentTime = new Date(currentStartsAt).getTime();
+
+  return availableSlots
+    .filter((slot) => {
+      const startsAt = new Date(slot.startsAt).getTime();
+      return startsAt > now.getTime() && startsAt !== currentTime;
+    })
+    .map((slot) => ({
+      ...slot,
+      label: `${formatDate(slot.startsAt)} · ${slot.label ?? formatTime(slot.startsAt)}`,
+    }));
+}
 
 export default async function AppointmentPage({ params }: AppointmentPageProps) {
   const { reference } = await params;
@@ -19,6 +45,12 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
   if (!appointment) {
     notFound();
   }
+
+  const now = new Date();
+  const changeable = isChangeable(appointment, now);
+  const rescheduleSlots = changeable
+    ? await getRescheduleSlots(appointment.startsAt, now)
+    : [];
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#f7f9fc] text-[#0a2540]">
@@ -41,15 +73,12 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
             <AppointmentCard appointment={appointment} />
           </div>
 
-          <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-[#dbe3ef] bg-white px-5 py-5 text-sm text-[#53627a] sm:flex-row sm:items-center sm:justify-between sm:px-7">
-            <div>
-              <p className="font-semibold text-[#0a2540]">Need to change something?</p>
-              <p className="mt-1">Give our tiny team a call and we&apos;ll take care of it.</p>
-            </div>
-            <a href="tel:+8225550142" className="inline-flex items-center gap-2 font-bold text-[#635bff] hover:text-[#0a2540]">
-              <Phone aria-hidden="true" className="size-4" /> 02-555-0142
-            </a>
-          </div>
+          <AppointmentActions
+            reference={appointment.reference}
+            status={appointment.status}
+            slots={rescheduleSlots}
+            changeable={changeable}
+          />
         </div>
 
         <footer className="relative mx-auto mt-16 flex max-w-4xl flex-col gap-2 border-t border-[#dbe3ef] pt-5 text-xs text-[#8898aa] sm:flex-row sm:items-center sm:justify-between">

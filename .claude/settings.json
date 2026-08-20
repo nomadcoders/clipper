@@ -1,4 +1,5 @@
 {
+  "outputStyle": "Spartan",
   "permissions": {
     "allow": ["Bash(npx tsc --noEmit*)"],
     "deny": [
