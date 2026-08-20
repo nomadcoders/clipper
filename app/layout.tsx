@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { themeInitScript } from "@/lib/clipper/theme";
+
 export const metadata: Metadata = {
   title: "Clipper — At-home grooming in Seoul",
   description: "Book a thoughtful, at-home grooming visit for your favorite pet.",
@@ -8,8 +10,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-[#f7f0e6] text-[#202321] antialiased">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-screen bg-canvas text-ink antialiased">
         {children}
       </body>
     </html>
