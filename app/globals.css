@@ -23,6 +23,36 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-body: var(--ink-body);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-brand: var(--brand);
+  --color-deep: var(--deep);
+  --color-ok-bg: var(--ok-bg);
+  --color-ok-line: var(--ok-line);
+  --color-ok-ink: var(--ok-ink);
+  --color-info-bg: var(--info-bg);
+  --color-info-line: var(--info-line);
+  --color-info-ink: var(--info-ink);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-line: var(--danger-line);
+  --color-danger-ink: var(--danger-ink);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-warn-ink: var(--warn-ink);
+  --color-warm-canvas: var(--warm-canvas);
+  --color-warm-surface: var(--warm-surface);
+  --color-warm-line: var(--warm-line);
+  --color-warm-ink: var(--warm-ink);
+  --color-warm-ink-muted: var(--warm-ink-muted);
+  --color-warm-brand: var(--warm-brand);
+  --color-warm-accent: var(--warm-accent);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -50,9 +80,45 @@
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #a1a1aa;
+
+  /* Clipper palette — light */
+  --canvas: #f7f9fc;
+  --surface: #ffffff;
+  --surface-2: #f7f9fc;
+  --line: #dbe3ef;
+  --line-soft: #e6ebf1;
+  --ink: #0a2540;
+  --ink-body: #425466;
+  --ink-muted: #53627a;
+  --ink-subtle: #8898aa;
+  --brand: #635bff;
+  --deep: #0a2540;
+  --ok-bg: #e7f8f1;
+  --ok-line: #bfe8db;
+  --ok-ink: #08775d;
+  --info-bg: #eef1ff;
+  --info-line: #cbd8ff;
+  --info-ink: #4353a3;
+  --danger-bg: #fff3f0;
+  --danger-line: #f3aaa0;
+  --danger-ink: #8f3d30;
+  --warn-bg: #fff8dc;
+  --warn-line: #e4d5a3;
+  --warn-ink: #775d13;
+  --warm-canvas: #f7f0e6;
+  --warm-surface: #fffaf3;
+  --warm-line: #ded2c2;
+  --warm-ink: #202321;
+  --warm-ink-muted: #766b61;
+  --warm-brand: #b94f3e;
+  --warm-accent: #ff6b58;
+  --warm-shadow: 0 18px 45px rgb(74 56 36 / 8%);
+  --blob-opacity: 0.9;
+  --card-shadow: 0 32px 90px rgb(38 46 77 / 12%);
+  --card-shadow-sm: 0 20px 60px rgb(38 46 77 / 8%);
   color-scheme: light;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--canvas);
+  color: var(--ink);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -77,6 +143,42 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #71717a;
+
+  /* Clipper palette — dark */
+  --canvas: #080c14;
+  --surface: #101725;
+  --surface-2: #0c1220;
+  --line: #232d3f;
+  --line-soft: #1b2434;
+  --ink: #eaf0fa;
+  --ink-body: #b3c0d4;
+  --ink-muted: #97a5bc;
+  --ink-subtle: #7d8ba3;
+  --brand: #7c74ff;
+  --deep: #131c30;
+  --ok-bg: #0f2e25;
+  --ok-line: #1e4c3d;
+  --ok-ink: #5fd8ae;
+  --info-bg: #191f3d;
+  --info-line: #2b3565;
+  --info-ink: #a8b4ff;
+  --danger-bg: #2b1614;
+  --danger-line: #5c2b28;
+  --danger-ink: #ff9b91;
+  --warn-bg: #2a2413;
+  --warn-line: #524521;
+  --warn-ink: #e5c86a;
+  --warm-canvas: #14110d;
+  --warm-surface: #1c1813;
+  --warm-line: #322a20;
+  --warm-ink: #f2ece2;
+  --warm-ink-muted: #b3a696;
+  --warm-brand: #ff8a72;
+  --warm-accent: #ff7a63;
+  --warm-shadow: 0 18px 45px rgb(0 0 0 / 45%);
+  --blob-opacity: 0.42;
+  --card-shadow: 0 32px 90px rgb(0 0 0 / 55%);
+  --card-shadow-sm: 0 20px 60px rgb(0 0 0 / 45%);
   color-scheme: dark;
 }
 
@@ -95,11 +197,11 @@ a {
 }
 
 .clipper-booking--prism {
-  border-block: 1px solid #dbe3ef;
-  background: #f7f9fc;
+  border-block: 1px solid var(--line);
+  background: var(--canvas);
 }
 
 .clipper-booking--prism > div > div:last-child {
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 28px 80px rgb(38 46 77 / 12%) !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--card-shadow) !important;
 }

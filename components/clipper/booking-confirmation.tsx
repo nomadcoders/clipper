@@ -30,9 +30,9 @@ export function BookingConfirmation({ appointment }: BookingConfirmationProps) {
   const cancelled = details.status === "cancelled";
 
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-[#0a2540] px-5 py-8 text-white shadow-[0_28px_80px_rgba(10,37,64,0.24)] sm:px-8 sm:py-10">
+    <section className="relative overflow-hidden rounded-2xl bg-deep px-5 py-8 text-white shadow-[0_28px_80px_rgba(10,37,64,0.24)] sm:px-8 sm:py-10">
       <div className="relative max-w-xl">
-        <div className="mb-6 flex size-12 items-center justify-center rounded-full bg-white text-[#635bff] shadow-sm">
+        <div className="mb-6 flex size-12 items-center justify-center rounded-full bg-white text-brand shadow-sm">
           {cancelled ? (
             <X aria-hidden="true" className="size-6" strokeWidth={3} />
           ) : (

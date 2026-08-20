@@ -18,7 +18,7 @@ type AppointmentActionsProps = {
 
 type OpenPanel = "none" | "reschedule" | "cancel";
 
-const accent = "#635bff";
+const accent = "var(--brand)";
 
 export function AppointmentActions({
   reference,
@@ -74,10 +74,10 @@ export function AppointmentActions({
   }
 
   return (
-    <section className="mt-8 rounded-2xl border border-[#dbe3ef] bg-white px-5 py-5 text-sm text-[#53627a] sm:px-7">
+    <section className="mt-8 rounded-2xl border border-line bg-surface px-5 py-5 text-sm text-ink-muted sm:px-7">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-semibold text-[#0a2540]">Need to change something?</p>
+          <p className="font-semibold text-ink">Need to change something?</p>
           <p className="mt-1">
             {changeable
               ? "Move this visit to another time, or cancel it — no charge either way."
@@ -103,7 +103,7 @@ export function AppointmentActions({
               variant="outline"
               onClick={() => openPanel("cancel")}
               disabled={submitting}
-              className="h-11 rounded-full border-[#dbe3ef] px-5 text-sm font-bold text-[#53627a] shadow-none hover:text-[#9f3f38]"
+              className="h-11 rounded-full border-line px-5 text-sm font-bold text-ink-muted shadow-none hover:text-danger-ink"
             >
               Cancel visit
             </Button>
@@ -111,7 +111,7 @@ export function AppointmentActions({
         ) : (
           <a
             href="tel:+8225550142"
-            className="inline-flex shrink-0 items-center gap-2 font-bold text-[#635bff] hover:text-[#0a2540]"
+            className="inline-flex shrink-0 items-center gap-2 font-bold text-brand hover:text-ink"
           >
             <Phone aria-hidden="true" className="size-4" /> 02-555-0142
           </a>
@@ -119,21 +119,21 @@ export function AppointmentActions({
       </div>
 
       {error && (
-        <Alert className="mt-5 border-[#f3aaa0] bg-[#fff3f0] text-[#8f3d30]">
+        <Alert className="mt-5 border-danger-line bg-danger-bg text-danger-ink">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
       {panel === "reschedule" && (
-        <div className="mt-5 border-t border-[#e6ebf1] pt-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8898aa]">
+        <div className="mt-5 border-t border-line-soft pt-5">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-ink-subtle">
             Pick a new arrival time
           </p>
 
           {slots.length === 0 ? (
             <p className="mt-3">
               No other times are open online right now. Give us a call at{" "}
-              <a href="tel:+8225550142" className="font-bold text-[#635bff] hover:text-[#0a2540]">
+              <a href="tel:+8225550142" className="font-bold text-brand hover:text-ink">
                 02-555-0142
               </a>{" "}
               and we’ll find one for you.
@@ -154,7 +154,7 @@ export function AppointmentActions({
                       "rounded-md border px-4 py-3 text-left text-sm font-bold",
                       selectedSlotId === slot.id
                         ? "text-white"
-                        : "border-[#dbe3ef] bg-white text-[#425466]",
+                        : "border-line bg-surface text-ink-body",
                     )}
                     style={
                       selectedSlotId === slot.id
@@ -181,12 +181,12 @@ export function AppointmentActions({
                   type="button"
                   onClick={() => openPanel("none")}
                   disabled={submitting}
-                  className="text-sm font-semibold text-[#8898aa] hover:text-[#0a2540]"
+                  className="text-sm font-semibold text-ink-subtle hover:text-ink"
                 >
                   Never mind
                 </button>
               </div>
-              <p className="mt-3 text-xs text-[#8898aa]">
+              <p className="mt-3 text-xs text-ink-subtle">
                 We’ll re-match your route, so your groomer may change.
               </p>
             </>
@@ -195,8 +195,8 @@ export function AppointmentActions({
       )}
 
       {panel === "cancel" && (
-        <div className="mt-5 border-t border-[#e6ebf1] pt-5">
-          <p className="font-semibold text-[#0a2540]">Cancel this visit?</p>
+        <div className="mt-5 border-t border-line-soft pt-5">
+          <p className="font-semibold text-ink">Cancel this visit?</p>
           <p className="mt-1">
             Your groomer’s time opens back up right away. You can always book again later.
           </p>
@@ -213,7 +213,7 @@ export function AppointmentActions({
               type="button"
               onClick={() => openPanel("none")}
               disabled={submitting}
-              className="text-sm font-semibold text-[#8898aa] hover:text-[#0a2540]"
+              className="text-sm font-semibold text-ink-subtle hover:text-ink"
             >
               Keep it
             </button>
