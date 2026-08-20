@@ -182,8 +182,13 @@
   color-scheme: dark;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -193,7 +198,13 @@ a {
 /* Temporary ui.sh comparison variants. Remove after a direction is selected. */
 .clipper-booking--prism {
   max-width: none;
-  padding-top: 5rem;
+  padding-top: 3rem;
+}
+
+@media (min-width: 640px) {
+  .clipper-booking--prism {
+    padding-top: 5rem;
+  }
 }
 
 .clipper-booking--prism {
