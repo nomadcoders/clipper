@@ -84,18 +84,18 @@ export function BookingFlow({ options, sectionId = "book" }: { options: BookingO
 
   return (
       <section id={sectionId} className="clipper-booking clipper-booking--prism scroll-mt-5">
-        <div className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-12">
-          <div className="mb-10 max-w-3xl pt-2">
+        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 sm:pb-24 lg:px-12">
+          <div className="mb-8 max-w-3xl pt-2 sm:mb-10">
             <p className="text-sm font-bold" style={{ color: accent }}>Book a Clipper visit</p>
-            <h2 className="mt-3 text-[clamp(2.7rem,6vw,5.25rem)] font-bold leading-[0.95] tracking-[-0.06em]" style={{ color: ink }}>
+            <h2 className="mt-3 text-[clamp(2.1rem,6vw,5.25rem)] font-bold leading-[0.98] tracking-[-0.05em] sm:leading-[0.95] sm:tracking-[-0.06em]" style={{ color: ink }}>
               Everything your pet needs. One calm visit.
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#53627a]">Choose the pet, service, location, and time. We’ll match the route with a trusted Seoul groomer.</p>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#53627a] sm:mt-5">Choose the pet, service, location, and time. We’ll match the route with a trusted Seoul groomer.</p>
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-[#dbe3ef] bg-white shadow-[0_32px_90px_rgb(38_46_77/12%)]">
             <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem]">
-              <div className="space-y-10 p-5 sm:p-8 lg:p-10">
+              <div className="space-y-8 p-5 sm:space-y-10 sm:p-8 lg:p-10">
                 {formError && <Alert className="border-[#f3aaa0] bg-[#fff3f0] text-[#8f3d30]"><AlertDescription>{formError}</AlertDescription></Alert>}
 
                 <fieldset>
@@ -110,8 +110,8 @@ export function BookingFlow({ options, sectionId = "book" }: { options: BookingO
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
-                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-[#dbe3ef] bg-white px-4 focus-visible:ring-[#705cf6]" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-[#dbe3ef] bg-white px-4 text-sm outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
-                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-[#dbe3ef] bg-white px-4" />
+                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-[#dbe3ef] bg-white px-4 text-base focus-visible:ring-[#705cf6] sm:text-sm" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-[#dbe3ef] bg-white px-4 text-base outline-none sm:text-sm"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
+                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-[#dbe3ef] bg-white px-4 text-base sm:text-sm" />
                 </fieldset>
 
                 <fieldset>
