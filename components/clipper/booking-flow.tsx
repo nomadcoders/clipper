@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
 import {
   Alert,
@@ -9,6 +9,12 @@ import {
   Button,
   Calendar,
   Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui";
 import {
   formatDate,
@@ -27,6 +33,20 @@ type SlotOption = BookingSlot & {
 
 const ink = "var(--ink)";
 const accent = "var(--brand)";
+
+const BREEDS = [
+  "Golden Retriever",
+  "Labrador Retriever",
+  "French Bulldog",
+  "German Shepherd",
+  "Poodle",
+  "Miniature Poodle",
+  "Pomeranian",
+  "Shiba Inu",
+  "Welsh Corgi",
+  "Yorkshire Terrier",
+  "Mixed Breed",
+];
 
 function normalizeSlot(slot: BookingSlot): SlotOption {
   const date = new Date(slot.startsAt);
@@ -81,7 +101,8 @@ export function BookingFlow({
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
 
-  function validateAndSubmit() {
+  function validateAndSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (
       !petName.trim() ||
       !petBreed ||
@@ -156,7 +177,10 @@ export function BookingFlow({
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--card-shadow)]">
+        <form
+          onSubmit={validateAndSubmit}
+          className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--card-shadow)]"
+        >
           <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-8 p-5 sm:space-y-10 sm:p-8 lg:p-10">
               {formError && (
@@ -174,18 +198,19 @@ export function BookingFlow({
                 </legend>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label
+                    <Label
                       htmlFor="pet-name"
                       className="text-xs font-bold text-ink-muted"
                     >
                       Pet name
-                    </label>
+                    </Label>
                     <Input
                       id="pet-name"
                       aria-describedby="pet-name-hint"
                       value={petName}
                       onChange={(event) => setPetName(event.target.value)}
                       placeholder="e.g. Luna"
+                      required
                       className="mt-2 h-12 rounded-md border-line bg-surface px-4 text-base font-normal text-ink focus-visible:ring-brand"
                     />
                     <span id="pet-name-hint" className="sr-only">
@@ -193,32 +218,32 @@ export function BookingFlow({
                     </span>
                   </div>
                   <div>
-                    <label
+                    <Label
                       htmlFor="pet-breed"
                       className="text-xs font-bold text-ink-muted"
                     >
                       Breed
-                    </label>
-                    <select
-                      id="pet-breed"
-                      aria-describedby="pet-breed-hint"
+                    </Label>
+                    <Select
                       value={petBreed}
-                      onChange={(event) => setPetBreed(event.target.value)}
-                      className="mt-2 h-12 w-full rounded-md border border-line bg-surface px-4 text-base font-normal text-ink outline-none focus:border-brand"
+                      onValueChange={setPetBreed}
+                      required
                     >
-                      <option value="">Choose a breed</option>
-                      <option>Golden Retriever</option>
-                      <option>Labrador Retriever</option>
-                      <option>French Bulldog</option>
-                      <option>German Shepherd</option>
-                      <option>Poodle</option>
-                      <option>Miniature Poodle</option>
-                      <option>Pomeranian</option>
-                      <option>Shiba Inu</option>
-                      <option>Welsh Corgi</option>
-                      <option>Yorkshire Terrier</option>
-                      <option>Mixed Breed</option>
-                    </select>
+                      <SelectTrigger
+                        id="pet-breed"
+                        aria-describedby="pet-breed-hint"
+                        className="mt-2 h-12 w-full rounded-md border border-line bg-surface px-4 text-base font-normal text-ink outline-none focus:border-brand"
+                      >
+                        <SelectValue placeholder="Choose a breed" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {BREEDS.map((breed) => (
+                          <SelectItem key={breed} value={breed}>
+                            {breed}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <span id="pet-breed-hint" className="sr-only">
                       Helps your groomer prepare the right tools
                     </span>
@@ -294,15 +319,16 @@ export function BookingFlow({
                 </legend>
                 <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]">
                   <div>
-                    <label htmlFor="street-address" className="sr-only">
+                    <Label htmlFor="street-address" className="sr-only">
                       Street address
-                    </label>
+                    </Label>
                     <Input
                       id="street-address"
                       aria-describedby="street-address-hint"
                       value={address}
                       onChange={(event) => setAddress(event.target.value)}
                       placeholder="Street address"
+                      required
                       className="h-12 rounded-md border-line bg-surface px-4 text-base focus-visible:ring-brand sm:text-sm"
                     />
                     <span id="street-address-hint" className="sr-only">
@@ -311,34 +337,38 @@ export function BookingFlow({
                     </span>
                   </div>
                   <div>
-                    <label htmlFor="neighborhood" className="sr-only">
+                    <Label htmlFor="neighborhood" className="sr-only">
                       Neighborhood
-                    </label>
-                    <select
-                      id="neighborhood"
-                      aria-describedby="neighborhood-hint"
+                    </Label>
+                    <Select
                       value={selectedNeighborhood}
-                      onChange={(event) =>
-                        setSelectedNeighborhood(event.target.value)
-                      }
-                      className="h-12 rounded-md border border-line bg-surface px-4 text-base outline-none sm:text-sm"
+                      onValueChange={setSelectedNeighborhood}
+                      required
                     >
-                      <option value="">Neighborhood</option>
-                      {neighborhoods.map((neighborhood) => (
-                        <option key={neighborhood} value={neighborhood}>
-                          {neighborhood}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger
+                        id="neighborhood"
+                        aria-describedby="neighborhood-hint"
+                        className="h-12 rounded-md border border-line bg-surface px-4 text-base outline-none sm:text-sm"
+                      >
+                        <SelectValue placeholder="Neighborhood" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {neighborhoods.map((neighborhood) => (
+                          <SelectItem key={neighborhood} value={neighborhood}>
+                            {neighborhood}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <span id="neighborhood-hint" className="sr-only">
                       Used to find groomers who serve your area
                     </span>
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="address-details" className="sr-only">
+                  <Label htmlFor="address-details" className="sr-only">
                     Apartment, floor, or gate code
-                  </label>
+                  </Label>
                   <Input
                     id="address-details"
                     aria-describedby="address-details-hint"
@@ -478,8 +508,7 @@ export function BookingFlow({
                   </span>
                 </div>
                 <Button
-                  type="button"
-                  onClick={validateAndSubmit}
+                  type="submit"
                   disabled={submitting}
                   className="h-12 w-full rounded-md text-sm font-bold !text-white shadow-none"
                   style={{ background: accent }}
@@ -492,7 +521,7 @@ export function BookingFlow({
               </div>
             </aside>
           </div>
-        </div>
+        </form>
       </div>
     </section>
   );
