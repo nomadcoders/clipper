@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/clipper/theme-toggle";
 import { getAppointments } from "@/lib/clipper/data";
 import { formatDate, formatMoney, formatTime } from "@/lib/clipper/format";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +57,16 @@ export default async function AppointmentsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">{`${formatDate(appointment.startsAt)} · ${formatTime(appointment.startsAt)}`}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.1em] text-ok-ink">
+                  <p
+                    className={cn(
+                      "mt-1 text-xs uppercase tracking-[0.1em]",
+                      appointment.status === "cancelled"
+                        ? "text-danger-ink"
+                        : appointment.status === "pending"
+                          ? "text-warn-ink"
+                          : "text-ok-ink",
+                    )}
+                  >
                     {appointment.status}
                   </p>
                 </div>
