@@ -1,3 +1,4 @@
+import { waitUntil } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 
 import {
@@ -15,6 +16,16 @@ type BookingRequest = {
   address?: unknown;
   startsAt?: unknown;
 };
+
+const REFERENCE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+/** Unbiased random string over REFERENCE_ALPHABET (32 symbols, so 5 bits per byte via masking). */
+function randomReferenceSuffix(length: number): string {
+  return Array.from(
+    crypto.getRandomValues(new Uint8Array(length)),
+    (byte) => REFERENCE_ALPHABET[byte & 31],
+  ).join("");
+}
 
 export async function POST(request: Request) {
   let input: BookingRequest;
@@ -99,13 +110,8 @@ export async function POST(request: Request) {
   }
 
   const now = new Date();
-  const bookingReference = `CLP-${Math.random()
-    .toString(36)
-    .slice(2, 8)
-    .toUpperCase()}`;
-  const appointmentId = `apt_${Date.now()}_${Math.random()
-    .toString(36)
-    .slice(2, 7)}`;
+  const bookingReference = `CLP-${randomReferenceSuffix(10)}`;
+  const appointmentId = `apt_${crypto.randomUUID()}`;
 
   await db.insert(appointments).values({
     id: appointmentId,
@@ -126,12 +132,14 @@ export async function POST(request: Request) {
   });
 
   // log it, don't make the customer wait for it
-  Promise.resolve().then(() => {
-    console.info("Clipper booking created", {
-      bookingReference,
-      petName: petName.trim(),
-    });
-  });
+  waitUntil(
+    Promise.resolve().then(() => {
+      console.info("Clipper booking created", {
+        bookingReference,
+        petName: petName.trim(),
+      });
+    }),
+  );
 
   return Response.json({ ok: true, reference: bookingReference });
 }

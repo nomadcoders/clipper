@@ -1,3 +1,4 @@
+import { waitUntil } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 
 import { appointments, groomingPackages } from "@/db/schema";
@@ -101,12 +102,14 @@ export async function POST(request: Request, context: RouteContext) {
     .where(eq(appointments.id, appointment.id));
 
   // log it, don't make the customer wait for it
-  Promise.resolve().then(() => {
-    console.info("Clipper booking rescheduled", {
-      bookingReference: appointment.bookingReference,
-      startsAt: startsAt.toISOString(),
-    });
-  });
+  waitUntil(
+    Promise.resolve().then(() => {
+      console.info("Clipper booking rescheduled", {
+        bookingReference: appointment.bookingReference,
+        startsAt: startsAt.toISOString(),
+      });
+    }),
+  );
 
   return Response.json({
     ok: true,
