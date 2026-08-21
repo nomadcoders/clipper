@@ -215,7 +215,7 @@ export function AppointmentActions({
               type="button"
               onClick={() => submit("cancel")}
               disabled={submitting}
-              className="h-11 rounded-full bg-[#9f3f38] px-5 text-sm font-bold !text-white shadow-none hover:bg-[#7f302a]"
+              className="h-11 rounded-full border border-danger-line bg-danger-bg px-5 text-sm font-bold text-danger-ink shadow-none hover:bg-danger-line"
             >
               {submitting ? "Cancelling…" : "Yes, cancel this visit"}
             </Button>
