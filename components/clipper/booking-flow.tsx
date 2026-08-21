@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
 import {
   Alert,
@@ -81,7 +81,8 @@ export function BookingFlow({
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
 
-  function validateAndSubmit() {
+  function validateAndSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (
       !petName.trim() ||
       !petBreed ||
@@ -156,7 +157,10 @@ export function BookingFlow({
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--card-shadow)]">
+        <form
+          onSubmit={validateAndSubmit}
+          className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--card-shadow)]"
+        >
           <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-8 p-5 sm:space-y-10 sm:p-8 lg:p-10">
               {formError && (
@@ -186,6 +190,7 @@ export function BookingFlow({
                       value={petName}
                       onChange={(event) => setPetName(event.target.value)}
                       placeholder="e.g. Luna"
+                      required
                       className="mt-2 h-12 rounded-md border-line bg-surface px-4 text-base font-normal text-ink focus-visible:ring-brand"
                     />
                     <span id="pet-name-hint" className="sr-only">
@@ -204,6 +209,7 @@ export function BookingFlow({
                       aria-describedby="pet-breed-hint"
                       value={petBreed}
                       onChange={(event) => setPetBreed(event.target.value)}
+                      required
                       className="mt-2 h-12 w-full rounded-md border border-line bg-surface px-4 text-base font-normal text-ink outline-none focus:border-brand"
                     >
                       <option value="">Choose a breed</option>
@@ -303,6 +309,7 @@ export function BookingFlow({
                       value={address}
                       onChange={(event) => setAddress(event.target.value)}
                       placeholder="Street address"
+                      required
                       className="h-12 rounded-md border-line bg-surface px-4 text-base focus-visible:ring-brand sm:text-sm"
                     />
                     <span id="street-address-hint" className="sr-only">
@@ -321,6 +328,7 @@ export function BookingFlow({
                       onChange={(event) =>
                         setSelectedNeighborhood(event.target.value)
                       }
+                      required
                       className="h-12 rounded-md border border-line bg-surface px-4 text-base outline-none sm:text-sm"
                     >
                       <option value="">Neighborhood</option>
@@ -478,8 +486,7 @@ export function BookingFlow({
                   </span>
                 </div>
                 <Button
-                  type="button"
-                  onClick={validateAndSubmit}
+                  type="submit"
                   disabled={submitting}
                   className="h-12 w-full rounded-md text-sm font-bold !text-white shadow-none"
                   style={{ background: accent }}
@@ -492,7 +499,7 @@ export function BookingFlow({
               </div>
             </aside>
           </div>
-        </div>
+        </form>
       </div>
     </section>
   );
