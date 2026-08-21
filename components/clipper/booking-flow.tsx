@@ -83,14 +83,7 @@ export function BookingFlow({
 
   function validateAndSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (
-      !petName.trim() ||
-      !petBreed ||
-      !selectedPackageId ||
-      !selectedNeighborhood ||
-      !address ||
-      !selectedSlot
-    ) {
+    if (!selectedPackageId || !selectedSlot) {
       setFormError(
         "Please complete each step before booking your Clipper visit.",
       );
