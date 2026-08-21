@@ -367,6 +367,18 @@ export function BookingFlow({
                 </p>
                 <Calendar
                   mode="single"
+                  selected={
+                    selectedSlot ? new Date(selectedSlot.startsAt) : undefined
+                  }
+                  onSelect={(date) => {
+                    if (!date) return;
+                    const slotForDay = groupedSlots[formatDateKey(date)]?.[0];
+                    if (slotForDay) {
+                      setSelectedSlotId(slotForDay.id);
+                      setFormError("");
+                    }
+                  }}
+                  disabled={(date) => !groupedSlots[formatDateKey(date)]}
                   className="mb-5 rounded-md border border-line bg-surface"
                 />
                 <div className="grid gap-5 sm:grid-cols-2">
