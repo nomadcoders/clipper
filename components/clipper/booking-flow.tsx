@@ -58,15 +58,15 @@ export function BookingFlow({
 
   const { neighborhoods } = options;
 
-  const [petName, setPetName] = useState("Luna");
-  const [petBreed, setPetBreed] = useState("Miniature Poodle");
+  const [petName, setPetName] = useState("");
+  const [petBreed, setPetBreed] = useState("");
   const [selectedPackageId, setSelectedPackageId] = useState(
     () => options.packages[0]?.id ?? "",
   );
   const [selectedNeighborhood, setSelectedNeighborhood] = useState(
     () => neighborhoods[0] ?? "",
   );
-  const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
+  const [address, setAddress] = useState("");
   const [addressDetails, setAddressDetails] = useState("");
   const [selectedSlotId, setSelectedSlotId] = useState(
     () => slots[0]?.id ?? "",
