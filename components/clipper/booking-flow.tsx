@@ -419,7 +419,8 @@ export function BookingFlow({
                   ))}
                   {!slots.length && (
                     <p className="text-sm text-ink-muted">
-                      No routes are open for this address yet.
+                      No arrival times are open right now. Check back soon or
+                      call us at 02-555-0142.
                     </p>
                   )}
                 </div>
