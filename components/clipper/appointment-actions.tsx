@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Alert, AlertDescription, Button } from "@/components/ui";
+import { formatDate, formatTime } from "@/lib/clipper/format";
 import type { BookingSlot } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
 
@@ -169,7 +170,8 @@ export function AppointmentActions({
                         : undefined
                     }
                   >
-                    {slot.label ?? slot.startsAt}
+                    {slot.label ??
+                      `${formatDate(slot.startsAt)} · ${formatTime(slot.startsAt)}`}
                   </button>
                 ))}
               </div>
@@ -215,7 +217,7 @@ export function AppointmentActions({
               type="button"
               onClick={() => submit("cancel")}
               disabled={submitting}
-              className="h-11 rounded-full bg-[#9f3f38] px-5 text-sm font-bold !text-white shadow-none hover:bg-[#7f302a]"
+              className="h-11 rounded-full border border-danger-line bg-danger-bg px-5 text-sm font-bold text-danger-ink shadow-none hover:bg-danger-line"
             >
               {submitting ? "Cancelling…" : "Yes, cancel this visit"}
             </Button>
