@@ -16,10 +16,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": [
-        "./worker-configuration.d.ts",
-        "node"
-    ]
+    "types": ["./worker-configuration.d.ts", "node"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

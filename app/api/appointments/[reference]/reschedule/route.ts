@@ -29,7 +29,10 @@ export async function POST(request: Request, context: RouteContext) {
     );
   }
 
-  if (typeof input.startsAt !== "string" || input.startsAt.trim().length === 0) {
+  if (
+    typeof input.startsAt !== "string" ||
+    input.startsAt.trim().length === 0
+  ) {
     return Response.json(
       { ok: false, error: "Missing required fields: startsAt." },
       { status: 400 },

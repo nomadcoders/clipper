@@ -5,7 +5,8 @@ import { themeInitScript } from "@/lib/clipper/theme";
 
 export const metadata: Metadata = {
   title: "Clipper — At-home grooming in Seoul",
-  description: "Book a thoughtful, at-home grooming visit for your favorite pet.",
+  description:
+    "Book a thoughtful, at-home grooming visit for your favorite pet.",
 };
 
 export const viewport: Viewport = {
@@ -15,7 +16,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

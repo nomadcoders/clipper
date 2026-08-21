@@ -1,10 +1,7 @@
 import { waitUntil } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 
-import {
-  appointments,
-  groomingPackages,
-} from "@/db/schema";
+import { appointments, groomingPackages } from "@/db/schema";
 import { findAvailableGroomer } from "@/lib/clipper/data";
 import { getDatabase } from "@/lib/clipper/db";
 
@@ -93,11 +90,7 @@ export async function POST(request: Request) {
   const endsAt = new Date(
     startsAt.getTime() + groomingPackage.durationMinutes * 60 * 1000,
   );
-  const groomerId = await findAvailableGroomer(
-    neighborhood,
-    startsAt,
-    endsAt,
-  );
+  const groomerId = await findAvailableGroomer(neighborhood, startsAt, endsAt);
 
   if (!groomerId) {
     return Response.json(

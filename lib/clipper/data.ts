@@ -1,14 +1,6 @@
 import { cache } from "react";
 
-import {
-  and,
-  desc,
-  eq,
-  gt,
-  inArray,
-  lt,
-  ne,
-} from "drizzle-orm";
+import { and, desc, eq, gt, inArray, lt, ne } from "drizzle-orm";
 
 import {
   appointments,
@@ -29,10 +21,26 @@ import type {
 // TODO: derive real slots from groomer_schedules minus booked appointments.
 // Until then the booking form shows these fixed placeholder arrival times.
 const PLACEHOLDER_SLOTS: BookingSlot[] = [
-  { id: "placeholder-fri-10", startsAt: "2026-08-21T10:00:00Z", label: "10:00 AM" },
-  { id: "placeholder-fri-13", startsAt: "2026-08-21T13:00:00Z", label: "1:00 PM" },
-  { id: "placeholder-sat-11", startsAt: "2026-08-22T11:00:00Z", label: "11:00 AM" },
-  { id: "placeholder-sat-14", startsAt: "2026-08-22T14:00:00Z", label: "2:00 PM" },
+  {
+    id: "placeholder-fri-10",
+    startsAt: "2026-08-21T10:00:00Z",
+    label: "10:00 AM",
+  },
+  {
+    id: "placeholder-fri-13",
+    startsAt: "2026-08-21T13:00:00Z",
+    label: "1:00 PM",
+  },
+  {
+    id: "placeholder-sat-11",
+    startsAt: "2026-08-22T11:00:00Z",
+    label: "11:00 AM",
+  },
+  {
+    id: "placeholder-sat-14",
+    startsAt: "2026-08-22T14:00:00Z",
+    label: "2:00 PM",
+  },
 ];
 
 export const getBookingOptions = cache(async (): Promise<BookingOption> => {
@@ -56,66 +64,71 @@ export const getBookingOptions = cache(async (): Promise<BookingOption> => {
   };
 });
 
-export const getAppointmentByReference = cache(async (
-  reference: string,
-): Promise<AppointmentDetails | null> => {
-  const db = getDatabase();
-  const rows = await db
-    .select({
-      appointment: appointments,
-      groomer: groomers,
-      groomingPackage: groomingPackages,
-    })
-    .from(appointments)
-    .leftJoin(groomers, eq(appointments.groomerId, groomers.id))
-    .innerJoin(
-      groomingPackages,
-      eq(appointments.packageId, groomingPackages.id),
-    )
-    .where(eq(appointments.bookingReference, reference))
-    .limit(1);
+export const getAppointmentByReference = cache(
+  async (reference: string): Promise<AppointmentDetails | null> => {
+    const db = getDatabase();
+    const rows = await db
+      .select({
+        appointment: appointments,
+        groomer: groomers,
+        groomingPackage: groomingPackages,
+      })
+      .from(appointments)
+      .leftJoin(groomers, eq(appointments.groomerId, groomers.id))
+      .innerJoin(
+        groomingPackages,
+        eq(appointments.packageId, groomingPackages.id),
+      )
+      .where(eq(appointments.bookingReference, reference))
+      .limit(1);
 
-  const row = rows[0];
-  if (!row) return null;
+    const row = rows[0];
+    if (!row) return null;
 
-  return {
-    ...row.appointment,
-    reference: row.appointment.bookingReference,
-    pet: { name: row.appointment.petName, breed: row.appointment.petBreed },
-    groomer: row.groomer,
-    package: row.groomingPackage,
-    startsAt: row.appointment.startsAt.toISOString(),
-    endsAt: row.appointment.endsAt.toISOString(),
-    createdAt: row.appointment.createdAt.toISOString(),
-    updatedAt: row.appointment.updatedAt.toISOString(),
-  };
-});
+    return {
+      ...row.appointment,
+      reference: row.appointment.bookingReference,
+      pet: { name: row.appointment.petName, breed: row.appointment.petBreed },
+      groomer: row.groomer,
+      package: row.groomingPackage,
+      startsAt: row.appointment.startsAt.toISOString(),
+      endsAt: row.appointment.endsAt.toISOString(),
+      createdAt: row.appointment.createdAt.toISOString(),
+      updatedAt: row.appointment.updatedAt.toISOString(),
+    };
+  },
+);
 
-export const getAppointments = cache(async (): Promise<AppointmentDetails[]> => {
-  const db = getDatabase();
-  const rows = await db
-    .select({
-      appointment: appointments,
-      groomer: groomers,
-      groomingPackage: groomingPackages,
-    })
-    .from(appointments)
-    .leftJoin(groomers, eq(appointments.groomerId, groomers.id))
-    .innerJoin(groomingPackages, eq(appointments.packageId, groomingPackages.id))
-    .orderBy(desc(appointments.startsAt));
+export const getAppointments = cache(
+  async (): Promise<AppointmentDetails[]> => {
+    const db = getDatabase();
+    const rows = await db
+      .select({
+        appointment: appointments,
+        groomer: groomers,
+        groomingPackage: groomingPackages,
+      })
+      .from(appointments)
+      .leftJoin(groomers, eq(appointments.groomerId, groomers.id))
+      .innerJoin(
+        groomingPackages,
+        eq(appointments.packageId, groomingPackages.id),
+      )
+      .orderBy(desc(appointments.startsAt));
 
-  return rows.map((row) => ({
-    ...row.appointment,
-    reference: row.appointment.bookingReference,
-    pet: { name: row.appointment.petName, breed: row.appointment.petBreed },
-    groomer: row.groomer,
-    package: row.groomingPackage,
-    startsAt: row.appointment.startsAt.toISOString(),
-    endsAt: row.appointment.endsAt.toISOString(),
-    createdAt: row.appointment.createdAt.toISOString(),
-    updatedAt: row.appointment.updatedAt.toISOString(),
-  }));
-});
+    return rows.map((row) => ({
+      ...row.appointment,
+      reference: row.appointment.bookingReference,
+      pet: { name: row.appointment.petName, breed: row.appointment.petBreed },
+      groomer: row.groomer,
+      package: row.groomingPackage,
+      startsAt: row.appointment.startsAt.toISOString(),
+      endsAt: row.appointment.endsAt.toISOString(),
+      createdAt: row.appointment.createdAt.toISOString(),
+      updatedAt: row.appointment.updatedAt.toISOString(),
+    }));
+  },
+);
 
 /** Raw appointment row, for the write paths that need Date objects, not the view model. */
 export async function getAppointmentRowByReference(reference: string) {
