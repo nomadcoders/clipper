@@ -20,7 +20,11 @@ export async function loadChangeableAppointment(
   const appointment = await getAppointmentRowByReference(reference);
 
   if (!appointment) {
-    return { ok: false, status: 404, error: "That booking reference was not found." };
+    return {
+      ok: false,
+      status: 404,
+      error: "That booking reference was not found.",
+    };
   }
 
   if (!CHANGEABLE_STATUSES.has(appointment.status)) {
@@ -35,7 +39,8 @@ export async function loadChangeableAppointment(
     return {
       ok: false,
       status: 409,
-      error: "This visit has already started. Give us a call and we'll sort it out.",
+      error:
+        "This visit has already started. Give us a call and we'll sort it out.",
     };
   }
 

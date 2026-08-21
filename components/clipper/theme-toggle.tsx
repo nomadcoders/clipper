@@ -10,7 +10,13 @@ import { cn } from "@/lib/utils";
  * icons swap through the dark: variant rather than React state — no flash, no
  * hydration mismatch.
  */
-export function ThemeToggle({ className = "", tone = "prism" }: { className?: string; tone?: "prism" | "warm" }) {
+export function ThemeToggle({
+  className = "",
+  tone = "prism",
+}: {
+  className?: string;
+  tone?: "prism" | "warm";
+}) {
   function toggle() {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);

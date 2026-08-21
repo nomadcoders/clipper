@@ -7,7 +7,10 @@ import { AppointmentCard } from "@/components/clipper/appointment-card";
 import { BookingConfirmation } from "@/components/clipper/booking-confirmation";
 import { ThemeToggle } from "@/components/clipper/theme-toggle";
 import { isChangeable } from "@/lib/clipper/appointment-changes";
-import { getAppointmentByReference, getBookingOptions } from "@/lib/clipper/data";
+import {
+  getAppointmentByReference,
+  getBookingOptions,
+} from "@/lib/clipper/data";
 import { formatDate, formatTime } from "@/lib/clipper/format";
 import type { BookingSlot } from "@/lib/clipper/types";
 
@@ -39,7 +42,9 @@ async function getRescheduleSlots(
     }));
 }
 
-export default async function AppointmentPage({ params }: AppointmentPageProps) {
+export default async function AppointmentPage({
+  params,
+}: AppointmentPageProps) {
   const { reference } = await params;
   const appointment = await getAppointmentByReference(reference);
 
@@ -55,20 +60,35 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-canvas text-ink">
-      <div aria-hidden="true" className="absolute -right-[28rem] -top-[35rem] h-[62rem] w-[62rem] rotate-[24deg] bg-[linear-gradient(135deg,#ffdb80,#ff8f70_28%,#d783ff_52%,#7a73ff_74%,#68d5ff)] opacity-55 blur-[3px] dark:opacity-30" />
+      <div
+        aria-hidden="true"
+        className="absolute -right-[28rem] -top-[35rem] h-[62rem] w-[62rem] rotate-[24deg] bg-[linear-gradient(135deg,#ffdb80,#ff8f70_28%,#d783ff_52%,#7a73ff_74%,#68d5ff)] opacity-55 blur-[3px] dark:opacity-30"
+      />
       <div className="mx-auto max-w-6xl px-5 pb-16 sm:px-8 lg:px-12">
         <header className="relative flex items-center justify-between py-6 sm:py-8">
-          <Link href="/" className="text-2xl font-black tracking-[-0.07em] text-ink">clipper</Link>
+          <Link
+            href="/"
+            className="text-2xl font-black tracking-[-0.07em] text-ink"
+          >
+            clipper
+          </Link>
           <div className="flex items-center gap-3">
-            <Link href="/#book-prism" className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold !text-white transition-colors hover:bg-deep">
-              Book another visit <ArrowUpRight aria-hidden="true" className="size-4" />
+            <Link
+              href="/#book-prism"
+              className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold !text-white transition-colors hover:bg-deep"
+            >
+              Book another visit{" "}
+              <ArrowUpRight aria-hidden="true" className="size-4" />
             </Link>
             <ThemeToggle />
           </div>
         </header>
 
         <div className="relative mx-auto max-w-4xl pt-8 sm:pt-14">
-          <Link href="/appointments" className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-ink-muted transition-colors hover:text-brand">
+          <Link
+            href="/appointments"
+            className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-ink-muted transition-colors hover:text-brand"
+          >
             <ArrowLeft aria-hidden="true" className="size-4" /> All appointments
           </Link>
           <BookingConfirmation appointment={appointment} />

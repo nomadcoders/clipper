@@ -28,7 +28,9 @@ export function AppointmentActions({
 }: AppointmentActionsProps) {
   const router = useRouter();
   const [panel, setPanel] = useState<OpenPanel>("none");
-  const [selectedSlotId, setSelectedSlotId] = useState(() => slots[0]?.id ?? "");
+  const [selectedSlotId, setSelectedSlotId] = useState(
+    () => slots[0]?.id ?? "",
+  );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -52,13 +54,15 @@ export function AppointmentActions({
           body: JSON.stringify(body ?? {}),
         },
       );
-      const data = (await response.json().catch(() => null)) as
-        | { ok?: boolean; error?: string }
-        | null;
+      const data = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: string;
+      } | null;
 
       if (!response.ok || !data?.ok) {
         setError(
-          data?.error ?? "Something went wrong. Please try again or give us a call.",
+          data?.error ??
+            "Something went wrong. Please try again or give us a call.",
         );
         setSubmitting(false);
         return;
@@ -133,7 +137,10 @@ export function AppointmentActions({
           {slots.length === 0 ? (
             <p className="mt-3">
               No other times are open online right now. Give us a call at{" "}
-              <a href="tel:+8225550142" className="font-bold text-brand hover:text-ink">
+              <a
+                href="tel:+8225550142"
+                className="font-bold text-brand hover:text-ink"
+              >
                 02-555-0142
               </a>{" "}
               and we’ll find one for you.
@@ -170,7 +177,9 @@ export function AppointmentActions({
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Button
                   type="button"
-                  onClick={() => submit("reschedule", { startsAt: selectedSlot?.startsAt })}
+                  onClick={() =>
+                    submit("reschedule", { startsAt: selectedSlot?.startsAt })
+                  }
                   disabled={submitting || !selectedSlot}
                   className="h-11 rounded-full px-5 text-sm font-bold !text-white shadow-none"
                   style={{ background: accent }}
@@ -198,7 +207,8 @@ export function AppointmentActions({
         <div className="mt-5 border-t border-line-soft pt-5">
           <p className="font-semibold text-ink">Cancel this visit?</p>
           <p className="mt-1">
-            Your groomer’s time opens back up right away. You can always book again later.
+            Your groomer’s time opens back up right away. You can always book
+            again later.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Button

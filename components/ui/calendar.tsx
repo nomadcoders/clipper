@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 import { DayPicker, type DayPickerProps } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
@@ -23,7 +28,8 @@ function Calendar({ className, classNames, ...props }: DayPickerProps) {
           "absolute right-1 size-7 rounded-md bg-transparent p-0 opacity-50 hover:bg-accent hover:opacity-100",
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
-        weekday: "w-8 rounded-md text-[0.8rem] font-normal text-muted-foreground",
+        weekday:
+          "w-8 rounded-md text-[0.8rem] font-normal text-muted-foreground",
         week: "mt-2 flex w-full",
         day: "relative size-8 p-0 text-center text-sm focus-within:relative focus-within:z-20",
         day_button:
@@ -35,7 +41,11 @@ function Calendar({ className, classNames, ...props }: DayPickerProps) {
         ...classNames,
       }}
       components={{
-        Chevron: ({ orientation, className: chevronClassName, ...chevronProps }) => {
+        Chevron: ({
+          orientation,
+          className: chevronClassName,
+          ...chevronProps
+        }) => {
           const Icon =
             orientation === "left"
               ? ChevronLeft

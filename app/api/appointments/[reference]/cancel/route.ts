@@ -36,5 +36,8 @@ export async function POST(_request: Request, context: RouteContext) {
     }),
   );
 
-  return Response.json({ ok: true, reference: result.appointment.bookingReference });
+  return Response.json({
+    ok: true,
+    reference: result.appointment.bookingReference,
+  });
 }

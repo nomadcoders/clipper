@@ -117,9 +117,7 @@
       "indexes": {
         "appointments_booking_reference_unique": {
           "name": "appointments_booking_reference_unique",
-          "columns": [
-            "booking_reference"
-          ],
+          "columns": ["booking_reference"],
           "isUnique": true
         }
       },
@@ -128,12 +126,8 @@
           "name": "appointments_groomer_id_groomers_id_fk",
           "tableFrom": "appointments",
           "tableTo": "groomers",
-          "columnsFrom": [
-            "groomer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["groomer_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -141,12 +135,8 @@
           "name": "appointments_package_id_grooming_packages_id_fk",
           "tableFrom": "appointments",
           "tableTo": "grooming_packages",
-          "columnsFrom": [
-            "package_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["package_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -208,12 +198,8 @@
           "name": "groomer_schedules_groomer_id_groomers_id_fk",
           "tableFrom": "groomer_schedules",
           "tableTo": "groomers",
-          "columnsFrom": [
-            "groomer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["groomer_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -246,22 +232,15 @@
           "name": "groomer_service_areas_groomer_id_groomers_id_fk",
           "tableFrom": "groomer_service_areas",
           "tableTo": "groomers",
-          "columnsFrom": [
-            "groomer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["groomer_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "groomer_service_areas_groomer_id_neighborhood_pk": {
-          "columns": [
-            "groomer_id",
-            "neighborhood"
-          ],
+          "columns": ["groomer_id", "neighborhood"],
           "name": "groomer_service_areas_groomer_id_neighborhood_pk"
         }
       },

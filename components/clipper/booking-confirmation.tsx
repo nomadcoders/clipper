@@ -43,16 +43,29 @@ export function BookingConfirmation({ appointment }: BookingConfirmationProps) {
           <Sparkles aria-hidden="true" className="size-3.5" /> {status}
         </p>
         <h1 className="max-w-lg text-4xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl">
-          {cancelled ? `${petName}'s visit is cancelled.` : `${petName} is on the books.`}
+          {cancelled
+            ? `${petName}'s visit is cancelled.`
+            : `${petName} is on the books.`}
         </h1>
         <p className="mt-5 max-w-md text-base leading-7 text-[#adbdcc] sm:text-lg">
-          {cancelled
-            ? "We've freed up the slot. Whenever you're ready for the next one, we'll be here."
-            : <>We&apos;ll see you on {formatDate(details.startsAt, "long", "your chosen day")}. Your groomer will bring the good towels—and a little extra patience.</>}
+          {cancelled ? (
+            "We've freed up the slot. Whenever you're ready for the next one, we'll be here."
+          ) : (
+            <>
+              We&apos;ll see you on{" "}
+              {formatDate(details.startsAt, "long", "your chosen day")}. Your
+              groomer will bring the good towels—and a little extra patience.
+            </>
+          )}
         </p>
         <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-[#d6e2ec]">
-          <span className="inline-flex items-center gap-2"><Heart aria-hidden="true" className="size-4 fill-current" /> Made for good pets</span>
-          <span className="font-mono text-xs tracking-[0.14em] text-[#80e9ff]">{details.reference ?? details.bookingReference ?? "CLP—"}</span>
+          <span className="inline-flex items-center gap-2">
+            <Heart aria-hidden="true" className="size-4 fill-current" /> Made
+            for good pets
+          </span>
+          <span className="font-mono text-xs tracking-[0.14em] text-[#80e9ff]">
+            {details.reference ?? details.bookingReference ?? "CLP—"}
+          </span>
         </div>
       </div>
     </section>
