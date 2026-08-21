@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Alert, AlertDescription, Button } from "@/components/ui";
+import { formatDate, formatTime } from "@/lib/clipper/format";
 import type { BookingSlot } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
 
@@ -169,7 +170,8 @@ export function AppointmentActions({
                         : undefined
                     }
                   >
-                    {slot.label ?? slot.startsAt}
+                    {slot.label ??
+                      `${formatDate(slot.startsAt)} · ${formatTime(slot.startsAt)}`}
                   </button>
                 ))}
               </div>
