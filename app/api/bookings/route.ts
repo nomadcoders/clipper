@@ -99,9 +99,10 @@ export async function POST(request: Request) {
   }
 
   const now = new Date();
-  const bookingReference = `CLP-${Math.random()
-    .toString(36)
-    .slice(2, 8)
+  const bookingReference = `CLP-${crypto
+    .randomUUID()
+    .replace(/-/g, "")
+    .slice(0, 8)
     .toUpperCase()}`;
   const appointmentId = `apt_${Date.now()}_${Math.random()
     .toString(36)

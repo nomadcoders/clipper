@@ -11,8 +11,7 @@ let client: ReturnType<typeof drizzle<typeof schema>> | undefined;
  */
 export function getDatabase() {
   if (!client) {
-    const bindings = env as unknown as Record<string, D1Database>;
-    client = drizzle(bindings.DB, { schema });
+    client = drizzle(env.DB, { schema });
   }
 
   return client;
