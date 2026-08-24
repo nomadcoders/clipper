@@ -58,7 +58,7 @@ export function BookingConfirmation({ appointment }: BookingConfirmationProps) {
         <p className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em] text-[#80e9ff]">
           <Sparkles aria-hidden="true" className="size-3.5" /> {status}
         </p>
-        <h1 className="max-w-lg text-4xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl">
+        <h1 className="max-w-lg text-[clamp(2rem,8vw,2.25rem)] font-bold leading-[1.02] tracking-[-0.045em] sm:text-6xl sm:leading-[0.98] sm:tracking-[-0.055em]">
           {petName} is on the books.
         </h1>
         <p className="mt-5 max-w-md text-base leading-7 text-[#adbdcc] sm:text-lg">
