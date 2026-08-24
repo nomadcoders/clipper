@@ -27,6 +27,43 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Clipper brand palette (prism / Stripe-like surfaces) */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-ink: var(--accent-soft-ink);
+  --color-deep: var(--deep);
+  --color-deep-ink: var(--deep-ink);
+  --color-deep-ink-2: var(--deep-ink-2);
+  --color-cyan: var(--cyan);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-ok-line: var(--ok-line);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-err: var(--err);
+  --color-err-bg: var(--err-bg);
+  --color-err-line: var(--err-line);
+
+  /* Clipper brand palette (warm / editorial surfaces) */
+  --color-warm-canvas: var(--warm-canvas);
+  --color-warm-surface: var(--warm-surface);
+  --color-warm-ink: var(--warm-ink);
+  --color-warm-ink-2: var(--warm-ink-2);
+  --color-warm-line: var(--warm-line);
+  --color-warm-accent: var(--warm-accent);
+  --color-warm-chip: var(--warm-chip);
+  --color-brand: var(--brand);
 }
 
 :root {
@@ -50,6 +87,42 @@
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #a1a1aa;
+
+  --canvas: #f7f9fc;
+  --surface: #ffffff;
+  --surface-alt: #f7f9fc;
+  --ink: #0a2540;
+  --ink-2: #425466;
+  --ink-3: #53627a;
+  --ink-4: #8898aa;
+  --line: #dbe3ef;
+  --line-2: #e6ebf1;
+  --accent: #635bff;
+  --accent-soft: #eef1ff;
+  --accent-soft-ink: #4353a3;
+  --deep: #0a2540;
+  --deep-ink: #ffffff;
+  --deep-ink-2: #adbdcc;
+  --cyan: #80e9ff;
+  --ok: #08775d;
+  --ok-bg: #e7f8f1;
+  --ok-line: #bfe8db;
+  --warn: #775d13;
+  --warn-bg: #fff8dc;
+  --warn-line: #e4d5a3;
+  --err: #9f3f38;
+  --err-bg: #fff0ef;
+  --err-line: #f3c4c0;
+
+  --warm-canvas: #f7f0e6;
+  --warm-surface: #fffaf3;
+  --warm-ink: #202321;
+  --warm-ink-2: #766b61;
+  --warm-line: #ded2c2;
+  --warm-accent: #b94f3e;
+  --warm-chip: #f4e2d6;
+  --brand: #ff6b58;
+
   color-scheme: light;
   background: var(--background);
   color: var(--foreground);
@@ -77,6 +150,42 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #71717a;
+
+  --canvas: #0b111c;
+  --surface: #131b29;
+  --surface-alt: #0f1725;
+  --ink: #e8eef8;
+  --ink-2: #b3c1d6;
+  --ink-3: #9aa9c0;
+  --ink-4: #7f8ea6;
+  --line: #232f44;
+  --line-2: #1c2636;
+  --accent: #8b84ff;
+  --accent-soft: #1e2050;
+  --accent-soft-ink: #b6bdff;
+  --deep: #101a2b;
+  --deep-ink: #f4f8ff;
+  --deep-ink-2: #9fb0c6;
+  --cyan: #80e9ff;
+  --ok: #6fe0bc;
+  --ok-bg: #0f2a22;
+  --ok-line: #1d4a3c;
+  --warn: #e6c766;
+  --warn-bg: #2b2413;
+  --warn-line: #4a3f1d;
+  --err: #ff9c92;
+  --err-bg: #2c1614;
+  --err-line: #4d221e;
+
+  --warm-canvas: #14120e;
+  --warm-surface: #1e1a15;
+  --warm-ink: #f3ece1;
+  --warm-ink-2: #a99c8c;
+  --warm-line: #35302a;
+  --warm-accent: #e8907c;
+  --warm-chip: #3a2b24;
+  --brand: #ff6b58;
+
   color-scheme: dark;
 }
 
@@ -84,8 +193,11 @@ body {
   margin: 0;
 }
 
-a {
-  color: inherit;
+/* Layered so Tailwind text-color utilities on links still win. */
+@layer base {
+  a {
+    color: inherit;
+  }
 }
 
 /* Temporary ui.sh comparison variants. Remove after a direction is selected. */
@@ -95,11 +207,15 @@ a {
 }
 
 .clipper-booking--prism {
-  border-block: 1px solid #dbe3ef;
-  background: #f7f9fc;
+  border-block: 1px solid var(--line);
+  background: var(--surface-alt);
 }
 
 .clipper-booking--prism > div > div:last-child {
-  border-color: #e2e8f0 !important;
+  border-color: var(--line) !important;
   box-shadow: 0 28px 80px rgb(38 46 77 / 12%) !important;
+}
+
+.dark .clipper-booking--prism > div > div:last-child {
+  box-shadow: 0 28px 80px rgb(0 0 0 / 45%) !important;
 }
