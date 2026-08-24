@@ -1,8 +1,12 @@
-"use client";
-
 import { BookingFlow } from "@/components/clipper/booking-flow";
+import type { GroomingPackage } from "@/lib/clipper/types";
 
-export function PrismaticFlowHome() {
+type PrismaticFlowHomeProps = {
+  packages: GroomingPackage[];
+  neighborhoods: string[];
+};
+
+export function PrismaticFlowHome({ packages, neighborhoods }: PrismaticFlowHomeProps) {
   return (
     <main className="min-h-screen overflow-hidden bg-[#f7f9fc] text-[#0a2540]">
       <div className="relative isolate">
@@ -28,7 +32,7 @@ export function PrismaticFlowHome() {
         </section>
       </div>
 
-      <BookingFlow sectionId="book-prism" variant="prism" />
+      <BookingFlow sectionId="book-prism" packages={packages} neighborhoods={neighborhoods} />
       <Footer className="border-[#d9e2ec] bg-white text-[#425466]" />
     </main>
   );

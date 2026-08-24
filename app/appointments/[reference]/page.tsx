@@ -1,9 +1,10 @@
-import { ArrowLeft, ArrowUpRight, Phone } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AppointmentCard } from "@/components/clipper/appointment-card";
 import { BookingConfirmation } from "@/components/clipper/booking-confirmation";
+import { ManageAppointment } from "@/components/clipper/manage-appointment";
 import { getAppointmentByReference } from "@/lib/clipper/data";
 
 type AppointmentPageProps = {
@@ -41,15 +42,7 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
             <AppointmentCard appointment={appointment} />
           </div>
 
-          <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-[#dbe3ef] bg-white px-5 py-5 text-sm text-[#53627a] sm:flex-row sm:items-center sm:justify-between sm:px-7">
-            <div>
-              <p className="font-semibold text-[#0a2540]">Need to change something?</p>
-              <p className="mt-1">Give our tiny team a call and we&apos;ll take care of it.</p>
-            </div>
-            <a href="tel:+8225550142" className="inline-flex items-center gap-2 font-bold text-[#635bff] hover:text-[#0a2540]">
-              <Phone aria-hidden="true" className="size-4" /> 02-555-0142
-            </a>
-          </div>
+          <ManageAppointment appointment={appointment} />
         </div>
 
         <footer className="relative mx-auto mt-16 flex max-w-4xl flex-col gap-2 border-t border-[#dbe3ef] pt-5 text-xs text-[#8898aa] sm:flex-row sm:items-center sm:justify-between">

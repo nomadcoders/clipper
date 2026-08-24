@@ -11,3 +11,5 @@ node_modules
 
 *.tsbuildinfo
 .DS_Store
+
+.claude/worktrees/

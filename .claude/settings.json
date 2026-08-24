@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(npx tsc --noEmit*)"],
+    "deny": ["Bash(npm run deploy*)"]
+  }
+}

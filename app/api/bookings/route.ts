@@ -125,12 +125,9 @@ export async function POST(request: Request) {
     updatedAt: now,
   });
 
-  // log it, don't make the customer wait for it
-  Promise.resolve().then(() => {
-    console.info("Clipper booking created", {
-      bookingReference,
-      petName: petName.trim(),
-    });
+  console.info("Clipper booking created", {
+    bookingReference,
+    petName: petName.trim(),
   });
 
   return Response.json({ ok: true, reference: bookingReference });

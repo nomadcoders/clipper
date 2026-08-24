@@ -1,28 +1,17 @@
 import Link from "next/link";
 
 import { getAppointments } from "@/lib/clipper/data";
+import { formatMoney, formatShortDate, formatTime } from "@/lib/clipper/format";
 
 export const dynamic = "force-dynamic";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 function formatDate(value: string) {
-  const date = new Date(value);
-  const hours = date.getHours();
-  const suffix = hours >= 12 ? "PM" : "AM";
-  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
-  return `${DAYS[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()} · ${hour12}:${String(date.getMinutes()).padStart(2, "0")} ${suffix}`;
-}
-
-function formatMoney(cents: number) {
-  return `₩${cents.toLocaleString("ko-KR")}`;
+  return `${formatShortDate(value)} · ${formatTime(value)}`;
 }
 
 export default async function AppointmentsPage() {
   const appointments = await getAppointments();
-  const upcoming = await getAppointments();
-  const upcomingCount = upcoming.filter((appointment) => appointment.status !== "cancelled").length;
+  const upcomingCount = appointments.filter((appointment) => appointment.status !== "cancelled").length;
 
   return (
     <main className="min-h-screen bg-[#f7f9fc] text-[#0a2540]">
