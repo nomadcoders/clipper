@@ -30,14 +30,14 @@ export default async function AppointmentPage({ params }: AppointmentPageProps) 
           <Link href="/" className="text-2xl font-black tracking-[-0.07em] text-ink">clipper</Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/#book-prism" className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-bold !text-white transition-colors hover:bg-ink hover:!text-canvas">
-              Book another visit <ArrowUpRight aria-hidden="true" className="size-4" />
+            <Link href="/#book-prism" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2.5 text-xs font-bold !text-white transition-colors hover:bg-ink hover:!text-canvas sm:px-5 sm:text-sm">
+              Book another<span className="hidden sm:inline"> visit</span> <ArrowUpRight aria-hidden="true" className="size-4" />
             </Link>
           </div>
         </header>
 
-        <div className="relative mx-auto max-w-4xl pt-8 sm:pt-14">
-          <Link href="/appointments" className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-ink-3 transition-colors hover:text-accent">
+        <div className="relative mx-auto max-w-4xl pt-6 sm:pt-14">
+          <Link href="/appointments" className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-ink-3 transition-colors hover:text-accent sm:mb-8">
             <ArrowLeft aria-hidden="true" className="size-4" /> All appointments
           </Link>
           <BookingConfirmation appointment={appointment} />

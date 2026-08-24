@@ -55,10 +55,10 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   return (
     <section aria-labelledby="appointment-details-heading" className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_20px_60px_rgba(38,46,77,0.08)]">
       <div className="border-b border-line-2 px-5 py-6 sm:px-8 sm:py-7">
-        <div className="flex flex-wrap items-start justify-between gap-5">
-          <div>
+        <div className="flex flex-wrap items-start justify-between gap-4 sm:gap-5">
+          <div className="min-w-0">
             <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">Your Clipper visit</p>
-            <h2 id="appointment-details-heading" className="text-3xl font-bold leading-none tracking-[-0.04em] text-ink sm:text-4xl">
+            <h2 id="appointment-details-heading" className="break-words text-2xl font-bold leading-tight tracking-[-0.04em] text-ink sm:text-4xl sm:leading-none">
               {petName}&apos;s appointment
             </h2>
           </div>

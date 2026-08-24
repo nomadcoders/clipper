@@ -98,10 +98,10 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
   return (
       <section id={sectionId} className="clipper-booking clipper-booking--prism scroll-mt-5">
-        <div className="mx-auto max-w-7xl px-5 pb-24 sm:px-8 lg:px-12">
-          <div className="mb-10 max-w-3xl pt-2">
+        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 sm:pb-24 lg:px-12">
+          <div className="mb-8 max-w-3xl pt-2 sm:mb-10">
             <p className="text-sm font-bold" style={{ color: accent }}>Book a Clipper visit</p>
-            <h2 className="mt-3 text-[clamp(2.7rem,6vw,5.25rem)] font-bold leading-[0.95] tracking-[-0.06em]" style={{ color: ink }}>
+            <h2 className="mt-3 text-[clamp(2rem,7vw,5.25rem)] font-bold leading-[1] tracking-[-0.04em] sm:leading-[0.95] sm:tracking-[-0.06em]" style={{ color: ink }}>
               Everything your pet needs. One calm visit.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-ink-3">Choose the pet, service, location, and time. We’ll match the route with a trusted Seoul groomer.</p>
@@ -109,7 +109,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
           <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_32px_90px_rgb(38_46_77/12%)]">
             <div className="grid lg:grid-cols-[minmax(0,1fr)_20rem]">
-              <div className="space-y-10 p-5 sm:p-8 lg:p-10">
+              <div className="min-w-0 space-y-8 p-5 sm:space-y-10 sm:p-8 lg:p-10">
                 {formError && <Alert className="border-err-line bg-err-bg text-err"><AlertDescription>{formError}</AlertDescription></Alert>}
 
                 <fieldset>
@@ -119,13 +119,13 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>2. Choose a service</legend>
-                  <div className="divide-y divide-line-2 border-y border-line-2">{packages.map((pkg) => <button type="button" key={pkg.id} onClick={() => { setSelectedPackageId(pkg.id); setFormError(""); }} className={cn("grid w-full grid-cols-[1fr_auto] items-center gap-5 px-1 py-5 text-left", selectedPackageId === pkg.id ? "" : "opacity-70 hover:opacity-100")}><span><span className="flex items-center gap-2 font-bold" style={{ color: ink }}><span className="size-2 rounded-full" style={{ background: selectedPackageId === pkg.id ? accent : "var(--line)" }} />{pkg.name}</span><span className="mt-1 block pl-4 text-xs leading-5 text-ink-4">{pkg.description}</span></span><span className="text-right"><span className="block font-bold" style={{ color: ink }}>{formatMoney(pkg.priceCents)}</span><span className="text-xs text-ink-4">{pkg.durationMinutes} min</span></span></button>)}</div>
+                  <div className="divide-y divide-line-2 border-y border-line-2">{packages.map((pkg) => <button type="button" key={pkg.id} onClick={() => { setSelectedPackageId(pkg.id); setFormError(""); }} className={cn("grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-1 py-5 text-left sm:gap-5", selectedPackageId === pkg.id ? "" : "opacity-70 hover:opacity-100")}><span><span className="flex items-center gap-2 font-bold" style={{ color: ink }}><span className="size-2 rounded-full" style={{ background: selectedPackageId === pkg.id ? accent : "var(--line)" }} />{pkg.name}</span><span className="mt-1 block pl-4 text-xs leading-5 text-ink-4">{pkg.description}</span></span><span className="text-right"><span className="block font-bold" style={{ color: ink }}>{formatMoney(pkg.priceCents)}</span><span className="text-xs text-ink-4">{pkg.durationMinutes} min</span></span></button>)}</div>
                 </fieldset>
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
-                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-line bg-surface px-4 text-ink focus-visible:ring-accent" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-line bg-surface px-4 text-sm text-ink outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
-                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-line bg-surface px-4 text-ink" />
+                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-line bg-surface px-4 text-base text-ink focus-visible:ring-accent" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-line bg-surface px-4 text-sm text-ink outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
+                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-line bg-surface px-4 text-base text-ink" />
                 </fieldset>
 
                 <fieldset>
@@ -135,7 +135,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
                 </fieldset>
               </div>
 
-              <aside className={cn("border-t p-5 sm:p-7 lg:border-l lg:border-t-0", "border-line-2 bg-surface-alt")}>
+              <aside className="min-w-0 border-t border-line-2 bg-surface-alt p-5 sm:p-7 lg:border-l lg:border-t-0">
                 <div className="lg:sticky lg:top-6">
                   <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink-4">Visit summary</p>
                   <p className="mt-5 text-2xl font-bold tracking-[-0.04em]" style={{ color: ink }}>{petName || "Your pet"}</p>
