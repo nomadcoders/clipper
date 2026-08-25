@@ -48,14 +48,27 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
   const [selectedSlotId, setSelectedSlotId] = useState(() => slots[0]?.startsAt ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [attempted, setAttempted] = useState(false);
 
   const selectedPackage = packages.find((pkg) => pkg.id === selectedPackageId);
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
   const selectedSlot = slots.find((slot) => slot.startsAt === selectedSlotId);
 
+  const missingFields = {
+    petName: !petName.trim(),
+    petBreed: !petBreed,
+    address: !address.trim(),
+    neighborhood: !selectedNeighborhood,
+  };
+  const petNameInvalid = attempted && missingFields.petName;
+  const petBreedInvalid = attempted && missingFields.petBreed;
+  const addressInvalid = attempted && missingFields.address;
+  const neighborhoodInvalid = attempted && missingFields.neighborhood;
+
   function validateAndSubmit() {
-    if (!petName.trim() || !petBreed || !selectedPackageId || !selectedNeighborhood || !address || !selectedSlot) {
+    setAttempted(true);
+    if (Object.values(missingFields).some(Boolean) || !selectedPackageId || !selectedSlot) {
       setFormError("Please complete each step before booking your Clipper visit.");
       return;
     }
@@ -100,7 +113,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>1. Who are we grooming?</legend>
-                  <div className="grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-ink-3">Pet name<Input aria-label="Pet name" value={petName} onChange={(event) => setPetName(event.target.value)} placeholder="e.g. Luna" className="mt-2 h-12 rounded-md border-line bg-surface px-4 text-base font-normal text-ink focus-visible:ring-accent" /></label><label className="text-xs font-bold text-ink-3">Breed<select aria-label="Breed" value={petBreed} onChange={(event) => setPetBreed(event.target.value)} className="mt-2 h-12 w-full rounded-md border border-line bg-surface px-4 text-base font-normal text-ink outline-none focus:border-accent"><option value="">Choose a breed</option><option>Golden Retriever</option><option>Labrador Retriever</option><option>French Bulldog</option><option>German Shepherd</option><option>Poodle</option><option>Miniature Poodle</option><option>Pomeranian</option><option>Shiba Inu</option><option>Welsh Corgi</option><option>Yorkshire Terrier</option><option>Mixed Breed</option></select></label></div>
+                  <div className="grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-ink-3">Pet name<Input required aria-required="true" aria-invalid={petNameInvalid} aria-label="Pet name" value={petName} onChange={(event) => setPetName(event.target.value)} placeholder="e.g. Luna" className={cn("mt-2 h-12 rounded-md bg-surface px-4 text-base font-normal text-ink focus-visible:ring-accent", petNameInvalid ? "border-err-line" : "border-line")} /></label><label className="text-xs font-bold text-ink-3">Breed<select required aria-required="true" aria-invalid={petBreedInvalid} aria-label="Breed" value={petBreed} onChange={(event) => setPetBreed(event.target.value)} className={cn("mt-2 h-12 w-full rounded-md border bg-surface px-4 text-base font-normal text-ink outline-none focus:border-accent", petBreedInvalid ? "border-err-line" : "border-line")}><option value="">Choose a breed</option><option>Golden Retriever</option><option>Labrador Retriever</option><option>French Bulldog</option><option>German Shepherd</option><option>Poodle</option><option>Miniature Poodle</option><option>Pomeranian</option><option>Shiba Inu</option><option>Welsh Corgi</option><option>Yorkshire Terrier</option><option>Mixed Breed</option></select></label></div>
                 </fieldset>
 
                 <fieldset>
@@ -110,7 +123,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
-                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-line bg-surface px-4 text-base text-ink focus-visible:ring-accent" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-line bg-surface px-4 text-sm text-ink outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
+                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input required aria-required="true" aria-invalid={addressInvalid} aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className={cn("h-12 rounded-md bg-surface px-4 text-base text-ink focus-visible:ring-accent", addressInvalid ? "border-err-line" : "border-line")} /><select required aria-required="true" aria-invalid={neighborhoodInvalid} aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className={cn("h-12 rounded-md border bg-surface px-4 text-sm text-ink outline-none", neighborhoodInvalid ? "border-err-line" : "border-line")}><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
                   <Input aria-label="Apartment, floor, or gate code" placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-line bg-surface px-4 text-base text-ink" />
                 </fieldset>
 
