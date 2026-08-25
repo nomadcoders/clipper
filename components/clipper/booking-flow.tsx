@@ -54,8 +54,8 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
   const [petName, setPetName] = useState("Luna");
   const [petBreed, setPetBreed] = useState("Miniature Poodle");
-  const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
+  const [selectedPackageId, setSelectedPackageId] = useState(packages[0]?.id ?? "");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState(neighborhoods[0] ?? "");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
   const [selectedSlotId, setSelectedSlotId] = useState("fallback-fri-10");
   const [submitting, setSubmitting] = useState(false);
@@ -67,7 +67,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
   const selectedSlot = SLOTS.find((slot) => slot.id === selectedSlotId);
 
   function validateAndSubmit() {
-    if (!petName.trim() || !petBreed || !selectedPackageId || !selectedNeighborhood || !address || !selectedSlot) {
+    if (!petName.trim() || !petBreed || !selectedPackage || !selectedNeighborhood || !neighborhoods.includes(selectedNeighborhood) || !address || !selectedSlot) {
       setFormError("Please complete each step before booking your Clipper visit.");
       return;
     }
