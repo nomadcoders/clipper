@@ -1,22 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatMoney, formatShortDate, formatTime } from "@/lib/clipper/format";
+import { buildFallbackSlots, type FallbackSlotDaySpec } from "@/lib/clipper/fallback-slots";
+import { formatMoney } from "@/lib/clipper/format";
 import type { GroomingPackage } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
-
-type SlotOption = {
-  id: string;
-  startsAt: string;
-  dateKey: string;
-  dateLabel: string;
-  timeLabel: string;
-};
 
 type BookingFlowProps = {
   packages: GroomingPackage[];
@@ -27,61 +20,39 @@ type BookingFlowProps = {
 const INK = "#0a2540";
 const ACCENT = "#635bff";
 
-/**
- * Stand-in arrival times, generated relative to today. There is no slots
- * endpoint yet, and these are read as UTC by the availability check in
- * lib/clipper/data.ts — keep the times in UTC.
- */
-const FALLBACK_SLOT_DAYS = [
+const FALLBACK_SLOT_DAYS: FallbackSlotDaySpec[] = [
   { dayOffset: 1, hours: [10, 13] },
   { dayOffset: 2, hours: [11, 14] },
 ];
 
-function buildFallbackSlots(from: Date): SlotOption[] {
-  const slots: SlotOption[] = [];
-  for (const { dayOffset, hours } of FALLBACK_SLOT_DAYS) {
-    const day = new Date(from);
-    day.setUTCDate(day.getUTCDate() + dayOffset);
-    for (const hour of hours) {
-      const start = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), hour, 0, 0));
-      const startsAt = start.toISOString();
-      slots.push({
-        id: startsAt,
-        startsAt,
-        dateKey: startsAt.slice(0, 10),
-        dateLabel: formatShortDate(startsAt),
-        timeLabel: formatTime(startsAt),
-      });
-    }
-  }
-  return slots;
-}
-
-const SLOTS: SlotOption[] = buildFallbackSlots(new Date());
-
-const GROUPED_SLOT_ENTRIES = Object.entries(
-  SLOTS.reduce<Record<string, SlotOption[]>>((groups, slot) => {
-    (groups[slot.dateKey] ??= []).push(slot);
-    return groups;
-  }, {}),
-);
-
 export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: BookingFlowProps) {
   const router = useRouter();
+
+  const slots = useMemo(() => buildFallbackSlots(new Date(), FALLBACK_SLOT_DAYS), []);
+  const groupedSlotEntries = useMemo(
+    () =>
+      Object.entries(
+        slots.reduce<Record<string, typeof slots>>((groups, slot) => {
+          (groups[slot.dateKey] ??= []).push(slot);
+          return groups;
+        }, {}),
+      ),
+    [slots],
+  );
 
   const [petName, setPetName] = useState("Luna");
   const [petBreed, setPetBreed] = useState("Miniature Poodle");
   const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
-  const [selectedSlotId, setSelectedSlotId] = useState(SLOTS[0]?.id ?? "");
+  const [selectedSlotId, setSelectedSlotId] = useState(() => slots[0]?.startsAt ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
   const selectedPackage = packages.find((pkg) => pkg.id === selectedPackageId);
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
-  const selectedSlot = SLOTS.find((slot) => slot.id === selectedSlotId);
+  const selectedSlot = slots.find((slot) => slot.startsAt === selectedSlotId);
 
   function validateAndSubmit() {
     if (!petName.trim() || !petBreed || !selectedPackageId || !selectedNeighborhood || !address || !selectedSlot) {
@@ -148,7 +119,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
                 <fieldset>
                   <legend className="mb-1 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>4. Pick an arrival time</legend>
                   <p className="mb-4 text-xs text-ink-4">All times KST · matched against live groomer routes</p>
-                  <div className="grid gap-5 sm:grid-cols-2">{GROUPED_SLOT_ENTRIES.map(([dateKey, dateSlots]) => <div key={dateKey}><p className="mb-2 text-sm font-bold" style={{ color: ink }}>{dateSlots[0]?.dateLabel}</p><div className="grid grid-cols-2 gap-2">{dateSlots.map((slot) => <button type="button" key={slot.id} onClick={() => { setSelectedSlotId(slot.id); setFormError(""); }} className={cn("rounded-md border px-3 py-3 text-sm font-bold", selectedSlotId === slot.id ? "border-transparent text-white" : "border-line bg-surface text-ink-2")} style={selectedSlotId === slot.id ? { background: accent, borderColor: accent } : undefined}>{slot.timeLabel}</button>)}</div></div>)}{!SLOTS.length && <p className="text-sm text-ink-3">No routes are open for this address yet.</p>}</div>
+                  <div className="grid gap-5 sm:grid-cols-2">{groupedSlotEntries.map(([dateKey, dateSlots]) => <div key={dateKey}><p className="mb-2 text-sm font-bold" style={{ color: ink }}>{dateSlots[0]?.dateLabel}</p><div className="grid grid-cols-2 gap-2">{dateSlots.map((slot) => <button type="button" key={slot.startsAt} onClick={() => { setSelectedSlotId(slot.startsAt); setFormError(""); }} className={cn("rounded-md border px-3 py-3 text-sm font-bold", selectedSlotId === slot.startsAt ? "border-transparent text-white" : "border-line bg-surface text-ink-2")} style={selectedSlotId === slot.startsAt ? { background: accent, borderColor: accent } : undefined}>{slot.timeLabel}</button>)}</div></div>)}{!slots.length && <p className="text-sm text-ink-3">No routes are open for this address yet.</p>}</div>
                 </fieldset>
               </div>
 
