@@ -12,7 +12,7 @@ import {
 import {
   formatLongDate,
   formatMoney,
-  formatTime,
+  formatTimeRange,
 } from "@/lib/clipper/format";
 import type { AppointmentDetails } from "@/lib/clipper/types";
 
@@ -46,8 +46,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
     className: "border-accent-soft bg-accent-soft text-accent-soft-ink",
   };
   const appointmentDate = formatLongDate(appointment.startsAt, "Date to be confirmed");
-  const startTime = formatTime(appointment.startsAt, "Time to be confirmed");
-  const endTime = formatTime(appointment.endsAt, "Time to be confirmed");
+  const timeRange = formatTimeRange(appointment.startsAt, appointment.endsAt, "Time to be confirmed");
   const address = appointment.address ?? "Address to be confirmed";
   const neighborhood = appointment.neighborhood ? `, ${appointment.neighborhood}` : "";
   const petName = appointment.pet.name || "Your pet";
@@ -73,7 +72,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
         <div className="space-y-5 px-5 py-6 sm:px-8 sm:py-7">
           <DetailRow icon={<CalendarDays aria-hidden="true" />} label="When">
             <strong className="block font-semibold text-ink">{appointmentDate}</strong>
-            <span>{startTime} – {endTime}</span>
+            <span>{timeRange}</span>
           </DetailRow>
           <DetailRow icon={<MapPin aria-hidden="true" />} label="Where">
             <strong className="block font-semibold text-ink">At your home</strong>

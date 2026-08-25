@@ -2,13 +2,9 @@ import Link from "next/link";
 
 import { ThemeToggle } from "@/components/clipper/theme-toggle";
 import { getAppointments } from "@/lib/clipper/data";
-import { formatMoney, formatShortDate, formatTime } from "@/lib/clipper/format";
+import { formatDateTime, formatMoney } from "@/lib/clipper/format";
 
 export const dynamic = "force-dynamic";
-
-function formatDate(value: string) {
-  return `${formatShortDate(value)} · ${formatTime(value)}`;
-}
 
 export default async function AppointmentsPage() {
   const appointments = await getAppointments();
@@ -33,7 +29,7 @@ export default async function AppointmentsPage() {
             {appointments.map((appointment) => (
               <Link key={appointment.id} href={`/appointments/${appointment.reference}`} className="grid gap-4 border-b border-line-2 p-5 last:border-b-0 hover:bg-surface-alt sm:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_auto] sm:items-center sm:p-7">
                 <div className="min-w-0"><p className="text-lg font-bold tracking-[-0.035em] sm:text-xl">{appointment.pet.name} · {appointment.package.name}</p><p className="mt-1 text-sm text-ink-3">{appointment.neighborhood} · {appointment.groomer?.name ?? "Groomer pending"}</p></div>
-                <div><p className="text-sm font-semibold">{formatDate(appointment.startsAt)}</p><p className="mt-1 text-xs uppercase tracking-[0.1em] text-ok">{appointment.status}</p></div>
+                <div><p className="text-sm font-semibold">{formatDateTime(appointment.startsAt)}</p><p className="mt-1 text-xs uppercase tracking-[0.1em] text-ok">{appointment.status}</p></div>
                 <div className="flex items-center justify-between gap-5 sm:block sm:text-right"><span className="font-bold">{formatMoney(appointment.priceCents)}</span><span className="ml-4 text-accent">›</span></div>
               </Link>
             ))}

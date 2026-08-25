@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { formatShortDate, formatTime } from "@/lib/clipper/format";
+import { formatDateTime, formatShortDate, formatTime } from "@/lib/clipper/format";
 import type { AppointmentDetails } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
 
@@ -172,8 +172,7 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
             Pick a new time with {appointment.groomer?.name ?? "your groomer"}
           </p>
           <p className="mt-2 text-sm text-[#53627a]">
-            Currently {formatShortDate(appointment.startsAt)} ·{" "}
-            {formatTime(appointment.startsAt)}
+            Currently {formatDateTime(appointment.startsAt)}
           </p>
 
           <div className="mt-5 space-y-4">
@@ -235,9 +234,8 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
             Cancel {appointment.pet.name}&apos;s visit?
           </p>
           <p className="mt-1 text-sm text-[#53627a]">
-            The {formatShortDate(appointment.startsAt)} ·{" "}
-            {formatTime(appointment.startsAt)} slot will be released to another
-            pet. This cannot be undone.
+            The {formatDateTime(appointment.startsAt)} slot will be released to
+            another pet. This cannot be undone.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Button
