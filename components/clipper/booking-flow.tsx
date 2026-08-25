@@ -65,9 +65,10 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
   const selectedSlot = SLOTS.find((slot) => slot.id === selectedSlotId);
+  const isNeighborhoodValid = neighborhoods.includes(selectedNeighborhood);
 
   function validateAndSubmit() {
-    if (!petName.trim() || !petBreed || !selectedPackage || !selectedNeighborhood || !neighborhoods.includes(selectedNeighborhood) || !address || !selectedSlot) {
+    if (!petName.trim() || !petBreed || !selectedPackage || !isNeighborhoodValid || !address || !selectedSlot) {
       setFormError("Please complete each step before booking your Clipper visit.");
       return;
     }
