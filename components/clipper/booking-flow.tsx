@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatMoney, formatShortDate } from "@/lib/clipper/format";
+import { formatMoney, formatShortDate, formatTime } from "@/lib/clipper/format";
 import type { GroomingPackage } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
 
@@ -28,19 +28,36 @@ const INK = "#0a2540";
 const ACCENT = "#635bff";
 
 /**
- * Stand-in arrival times. There is no slots endpoint yet, and these are read as
- * UTC by the availability check in lib/clipper/data.ts — keep the times as-is.
+ * Stand-in arrival times, generated relative to today. There is no slots
+ * endpoint yet, and these are read as UTC by the availability check in
+ * lib/clipper/data.ts — keep the times in UTC.
  */
-const SLOTS: SlotOption[] = [
-  { id: "fallback-fri-10", startsAt: "2026-08-21T10:00:00Z", timeLabel: "10:00 AM" },
-  { id: "fallback-fri-13", startsAt: "2026-08-21T13:00:00Z", timeLabel: "1:00 PM" },
-  { id: "fallback-sat-11", startsAt: "2026-08-22T11:00:00Z", timeLabel: "11:00 AM" },
-  { id: "fallback-sat-14", startsAt: "2026-08-22T14:00:00Z", timeLabel: "2:00 PM" },
-].map((slot) => ({
-  ...slot,
-  dateKey: slot.startsAt.slice(0, 10),
-  dateLabel: formatShortDate(slot.startsAt),
-}));
+const FALLBACK_SLOT_DAYS = [
+  { dayOffset: 1, hours: [10, 13] },
+  { dayOffset: 2, hours: [11, 14] },
+];
+
+function buildFallbackSlots(from: Date): SlotOption[] {
+  const slots: SlotOption[] = [];
+  for (const { dayOffset, hours } of FALLBACK_SLOT_DAYS) {
+    const day = new Date(from);
+    day.setUTCDate(day.getUTCDate() + dayOffset);
+    for (const hour of hours) {
+      const start = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), hour, 0, 0));
+      const startsAt = start.toISOString();
+      slots.push({
+        id: startsAt,
+        startsAt,
+        dateKey: startsAt.slice(0, 10),
+        dateLabel: formatShortDate(startsAt),
+        timeLabel: formatTime(startsAt),
+      });
+    }
+  }
+  return slots;
+}
+
+const SLOTS: SlotOption[] = buildFallbackSlots(new Date());
 
 const GROUPED_SLOT_ENTRIES = Object.entries(
   SLOTS.reduce<Record<string, SlotOption[]>>((groups, slot) => {
@@ -57,7 +74,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
   const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
-  const [selectedSlotId, setSelectedSlotId] = useState("fallback-fri-10");
+  const [selectedSlotId, setSelectedSlotId] = useState(SLOTS[0]?.id ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
