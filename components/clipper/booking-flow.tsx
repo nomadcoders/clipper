@@ -1,22 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { formatMoney, formatShortDate } from "@/lib/clipper/format";
+import { buildFallbackSlots, type FallbackSlotDaySpec } from "@/lib/clipper/fallback-slots";
+import { formatMoney } from "@/lib/clipper/format";
 import type { GroomingPackage } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
-
-type SlotOption = {
-  id: string;
-  startsAt: string;
-  dateKey: string;
-  dateLabel: string;
-  timeLabel: string;
-};
 
 type BookingFlowProps = {
   packages: GroomingPackage[];
@@ -27,37 +20,32 @@ type BookingFlowProps = {
 const INK = "#0a2540";
 const ACCENT = "#635bff";
 
-/**
- * Stand-in arrival times. There is no slots endpoint yet, and these are read as
- * UTC by the availability check in lib/clipper/data.ts — keep the times as-is.
- */
-const SLOTS: SlotOption[] = [
-  { id: "fallback-fri-10", startsAt: "2026-08-21T10:00:00Z", timeLabel: "10:00 AM" },
-  { id: "fallback-fri-13", startsAt: "2026-08-21T13:00:00Z", timeLabel: "1:00 PM" },
-  { id: "fallback-sat-11", startsAt: "2026-08-22T11:00:00Z", timeLabel: "11:00 AM" },
-  { id: "fallback-sat-14", startsAt: "2026-08-22T14:00:00Z", timeLabel: "2:00 PM" },
-].map((slot) => ({
-  ...slot,
-  dateKey: slot.startsAt.slice(0, 10),
-  dateLabel: formatShortDate(slot.startsAt),
-}));
-
-const GROUPED_SLOT_ENTRIES = Object.entries(
-  SLOTS.reduce<Record<string, SlotOption[]>>((groups, slot) => {
-    (groups[slot.dateKey] ??= []).push(slot);
-    return groups;
-  }, {}),
-);
+const FALLBACK_SLOT_DAYS: FallbackSlotDaySpec[] = [
+  { dayOffset: 1, hours: [10, 13] },
+  { dayOffset: 2, hours: [11, 14] },
+];
 
 export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: BookingFlowProps) {
   const router = useRouter();
+
+  const slots = useMemo(() => buildFallbackSlots(new Date(), FALLBACK_SLOT_DAYS), []);
+  const groupedSlotEntries = useMemo(
+    () =>
+      Object.entries(
+        slots.reduce<Record<string, typeof slots>>((groups, slot) => {
+          (groups[slot.dateKey] ??= []).push(slot);
+          return groups;
+        }, {}),
+      ),
+    [slots],
+  );
 
   const [petName, setPetName] = useState("Luna");
   const [petBreed, setPetBreed] = useState("Miniature Poodle");
   const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
-  const [selectedSlotId, setSelectedSlotId] = useState("fallback-fri-10");
+  const [selectedSlotId, setSelectedSlotId] = useState(() => slots[0]?.startsAt ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [attempted, setAttempted] = useState(false);
@@ -65,7 +53,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
   const selectedPackage = packages.find((pkg) => pkg.id === selectedPackageId);
   const totalPrice = selectedPackage?.priceCents ?? 0;
   const durationMinutes = selectedPackage?.durationMinutes ?? 0;
-  const selectedSlot = SLOTS.find((slot) => slot.id === selectedSlotId);
+  const selectedSlot = slots.find((slot) => slot.startsAt === selectedSlotId);
 
   const missingFields = {
     petName: !petName.trim(),
@@ -91,18 +79,16 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ petName: petName.trim(), petBreed, packageId: selectedPackageId, neighborhood: selectedNeighborhood, address, startsAt: selectedSlot.startsAt }),
     })
-      .then((response) => {
-        if (!response.ok) throw new Error("Could not create booking");
-        return response.json() as Promise<{ reference?: string; bookingReference?: string }>;
-      })
-      .then((data) => {
+      .then(async (response) => {
+        const data = (await response.json().catch(() => ({}))) as { reference?: string; bookingReference?: string; error?: string };
+        if (!response.ok) throw new Error(data.error ?? "Could not create booking");
         const reference = data.reference ?? data.bookingReference;
         if (!reference) throw new Error("Booking reference missing");
         router.push(`/appointments/${encodeURIComponent(reference)}`);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         setSubmitting(false);
-        setFormError("We couldn’t save that visit. Please check your details and try again.");
+        setFormError(error instanceof Error && error.message ? error.message : "We couldn’t save that visit. Please check your details and try again.");
       });
   }
 
@@ -138,13 +124,13 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
                   <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input required aria-required="true" aria-invalid={addressInvalid} aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className={cn("h-12 rounded-md bg-surface px-4 text-base text-ink focus-visible:ring-accent", addressInvalid ? "border-err-line" : "border-line")} /><select required aria-required="true" aria-invalid={neighborhoodInvalid} aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className={cn("h-12 rounded-md border bg-surface px-4 text-sm text-ink outline-none", neighborhoodInvalid ? "border-err-line" : "border-line")}><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
-                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-line bg-surface px-4 text-base text-ink" />
+                  <Input aria-label="Apartment, floor, or gate code" placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-line bg-surface px-4 text-base text-ink" />
                 </fieldset>
 
                 <fieldset>
                   <legend className="mb-1 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>4. Pick an arrival time</legend>
                   <p className="mb-4 text-xs text-ink-4">All times KST · matched against live groomer routes</p>
-                  <div className="grid gap-5 sm:grid-cols-2">{GROUPED_SLOT_ENTRIES.map(([dateKey, dateSlots]) => <div key={dateKey}><p className="mb-2 text-sm font-bold" style={{ color: ink }}>{dateSlots[0]?.dateLabel}</p><div className="grid grid-cols-2 gap-2">{dateSlots.map((slot) => <button type="button" key={slot.id} onClick={() => { setSelectedSlotId(slot.id); setFormError(""); }} className={cn("rounded-md border px-3 py-3 text-sm font-bold", selectedSlotId === slot.id ? "border-transparent text-white" : "border-line bg-surface text-ink-2")} style={selectedSlotId === slot.id ? { background: accent, borderColor: accent } : undefined}>{slot.timeLabel}</button>)}</div></div>)}{!SLOTS.length && <p className="text-sm text-ink-3">No routes are open for this address yet.</p>}</div>
+                  <div className="grid gap-5 sm:grid-cols-2">{groupedSlotEntries.map(([dateKey, dateSlots]) => <div key={dateKey}><p className="mb-2 text-sm font-bold" style={{ color: ink }}>{dateSlots[0]?.dateLabel}</p><div className="grid grid-cols-2 gap-2">{dateSlots.map((slot) => <button type="button" key={slot.startsAt} onClick={() => { setSelectedSlotId(slot.startsAt); setFormError(""); }} className={cn("rounded-md border px-3 py-3 text-sm font-bold", selectedSlotId === slot.startsAt ? "border-transparent text-white" : "border-line bg-surface text-ink-2")} style={selectedSlotId === slot.startsAt ? { background: accent, borderColor: accent } : undefined}>{slot.timeLabel}</button>)}</div></div>)}{!slots.length && <p className="text-sm text-ink-3">No routes are open for this address yet.</p>}</div>
                 </fieldset>
               </div>
 
