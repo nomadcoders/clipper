@@ -70,12 +70,12 @@ export function formatTime(value: DateInput, fallback = "—") {
 
 export function formatDateTime(value: DateInput, fallback = "—") {
   const date = toDate(value);
-  return date ? `${SHORT_DATE.format(date)} · ${TIME.format(date)}` : fallback;
+  return date ? `${format(SHORT_DATE, date, fallback)} · ${format(TIME, date, fallback)}` : fallback;
 }
 
 export function formatTimeRange(start: DateInput, end: DateInput, fallback = "—") {
   const startDate = toDate(start);
   const endDate = toDate(end);
   if (!startDate || !endDate) return fallback;
-  return `${TIME.format(startDate)} – ${TIME.format(endDate)}`;
+  return `${format(TIME, startDate, fallback)} – ${format(TIME, endDate, fallback)}`;
 }
