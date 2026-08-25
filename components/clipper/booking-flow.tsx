@@ -78,18 +78,16 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ petName: petName.trim(), petBreed, packageId: selectedPackageId, neighborhood: selectedNeighborhood, address, startsAt: selectedSlot.startsAt }),
     })
-      .then((response) => {
-        if (!response.ok) throw new Error("Could not create booking");
-        return response.json() as Promise<{ reference?: string; bookingReference?: string }>;
-      })
-      .then((data) => {
+      .then(async (response) => {
+        const data = (await response.json().catch(() => ({}))) as { reference?: string; bookingReference?: string; error?: string };
+        if (!response.ok) throw new Error(data.error ?? "Could not create booking");
         const reference = data.reference ?? data.bookingReference;
         if (!reference) throw new Error("Booking reference missing");
         router.push(`/appointments/${encodeURIComponent(reference)}`);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         setSubmitting(false);
-        setFormError("We couldn’t save that visit. Please check your details and try again.");
+        setFormError(error instanceof Error && error.message ? error.message : "We couldn’t save that visit. Please check your details and try again.");
       });
   }
 
