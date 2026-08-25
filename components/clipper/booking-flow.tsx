@@ -42,8 +42,8 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
   const [petName, setPetName] = useState("Luna");
   const [petBreed, setPetBreed] = useState("Miniature Poodle");
-  const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
+  const [selectedPackageId, setSelectedPackageId] = useState(packages[0]?.id ?? "");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState(neighborhoods[0] ?? "");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
   const [selectedSlotId, setSelectedSlotId] = useState(() => slots[0]?.startsAt ?? "");
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +59,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
     petName: !petName.trim(),
     petBreed: !petBreed,
     address: !address.trim(),
-    neighborhood: !selectedNeighborhood,
+    neighborhood: !neighborhoods.includes(selectedNeighborhood),
   };
   const petNameInvalid = attempted && missingFields.petName;
   const petBreedInvalid = attempted && missingFields.petBreed;
@@ -68,7 +68,7 @@ export function BookingFlow({ packages, neighborhoods, sectionId = "book" }: Boo
 
   function validateAndSubmit() {
     setAttempted(true);
-    if (Object.values(missingFields).some(Boolean) || !selectedPackageId || !selectedSlot) {
+    if (Object.values(missingFields).some(Boolean) || !selectedPackage || !selectedSlot) {
       setFormError("Please complete each step before booking your Clipper visit.");
       return;
     }
