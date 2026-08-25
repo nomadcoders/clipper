@@ -21,9 +21,6 @@ type Slot = {
   timeLabel: string;
 };
 
-const INK = "#0a2540";
-const ACCENT = "#635bff";
-
 /**
  * Stand-in arrival times, same as the booking flow: there is no slots endpoint,
  * and the availability check in lib/clipper/data.ts reads these as UTC. The
@@ -114,13 +111,13 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
   }
 
   return (
-    <div className="mt-8 overflow-hidden rounded-2xl border border-[#dbe3ef] bg-white">
+    <div className="mt-8 overflow-hidden rounded-2xl border border-line bg-surface">
       <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
         <div>
-          <p className="font-semibold" style={{ color: INK }}>
+          <p className="font-semibold text-ink">
             Need to change something?
           </p>
-          <p className="mt-1 text-sm text-[#53627a]">
+          <p className="mt-1 text-sm text-ink-3">
             {isCancelled
               ? "This visit is cancelled. Book a new one whenever you are ready."
               : isPast
@@ -132,7 +129,7 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
         {locked ? (
           <a
             href="tel:+8225550142"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#635bff] hover:text-[#0a2540]"
+            className="inline-flex items-center gap-2 text-sm font-bold text-accent hover:text-ink"
           >
             <Phone aria-hidden="true" className="size-4" /> 02-555-0142
           </a>
@@ -144,8 +141,7 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
                 setError("");
                 setMode(mode === "reschedule" ? "idle" : "reschedule");
               }}
-              className="rounded-full px-5 text-sm font-bold !text-white hover:opacity-90"
-              style={{ backgroundColor: ACCENT }}
+              className="rounded-full bg-accent px-5 text-sm font-bold !text-white hover:opacity-90"
             >
               <CalendarClock aria-hidden="true" className="size-4" />
               Reschedule
@@ -157,7 +153,7 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
                 setError("");
                 setMode(mode === "cancel" ? "idle" : "cancel");
               }}
-              className="rounded-full border-[#dbe3ef] px-5 text-sm font-bold text-[#9f3f38] hover:bg-[#fff0ef] hover:text-[#9f3f38]"
+              className="rounded-full border-line px-5 text-sm font-bold text-err hover:bg-err-bg hover:text-err"
             >
               <X aria-hidden="true" className="size-4" />
               Cancel visit
@@ -167,11 +163,11 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
       </div>
 
       {mode === "reschedule" && !locked ? (
-        <div className="border-t border-[#e6ebf1] bg-[#f7f9fc] px-5 py-6 sm:px-7">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8898aa]">
+        <div className="border-t border-line-2 bg-surface-alt px-5 py-6 sm:px-7">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-ink-4">
             Pick a new time with {appointment.groomer?.name ?? "your groomer"}
           </p>
-          <p className="mt-2 text-sm text-[#53627a]">
+          <p className="mt-2 text-sm text-ink-3">
             Currently {formatShortDate(appointment.startsAt)} ·{" "}
             {formatTime(appointment.startsAt)}
           </p>
@@ -179,7 +175,7 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
           <div className="mt-5 space-y-4">
             {groupedSlots.map(([dateKey, slots]) => (
               <div key={dateKey}>
-                <p className="mb-2 text-sm font-semibold" style={{ color: INK }}>
+                <p className="mb-2 text-sm font-semibold text-ink">
                   {slots[0].dateLabel}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -193,10 +189,9 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
                         className={cn(
                           "rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
                           active
-                            ? "border-transparent !text-white"
-                            : "border-[#dbe3ef] bg-white text-[#53627a] hover:border-[#635bff] hover:text-[#0a2540]",
+                            ? "border-accent bg-accent !text-white"
+                            : "border-line bg-surface text-ink-3 hover:border-accent hover:text-ink",
                         )}
-                        style={active ? { backgroundColor: ACCENT } : undefined}
                         aria-pressed={active}
                       >
                         {slot.timeLabel}
@@ -213,15 +208,14 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
               type="button"
               disabled={pending || !selectedSlot}
               onClick={() => submit("reschedule", { startsAt: selectedSlot })}
-              className="rounded-full px-6 text-sm font-bold !text-white hover:opacity-90"
-              style={{ backgroundColor: INK }}
+              className="rounded-full bg-ink px-6 text-sm font-bold !text-white hover:opacity-90"
             >
               {pending ? "Moving your visit…" : "Confirm new time"}
             </Button>
             <button
               type="button"
               onClick={() => setMode("idle")}
-              className="text-sm font-semibold text-[#53627a] hover:text-[#0a2540]"
+              className="text-sm font-semibold text-ink-3 hover:text-ink"
             >
               Never mind
             </button>
@@ -230,11 +224,11 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
       ) : null}
 
       {mode === "cancel" && !locked ? (
-        <div className="border-t border-[#e6ebf1] bg-[#fff8f7] px-5 py-6 sm:px-7">
-          <p className="font-semibold" style={{ color: INK }}>
+        <div className="border-t border-line-2 bg-err-bg px-5 py-6 sm:px-7">
+          <p className="font-semibold text-ink">
             Cancel {appointment.pet.name}&apos;s visit?
           </p>
-          <p className="mt-1 text-sm text-[#53627a]">
+          <p className="mt-1 text-sm text-ink-3">
             The {formatShortDate(appointment.startsAt)} ·{" "}
             {formatTime(appointment.startsAt)} slot will be released to another
             pet. This cannot be undone.
@@ -244,14 +238,14 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
               type="button"
               disabled={pending}
               onClick={() => submit("cancel")}
-              className="rounded-full bg-[#9f3f38] px-6 text-sm font-bold !text-white hover:bg-[#8a352f]"
+              className="rounded-full bg-err px-6 text-sm font-bold !text-white hover:bg-err/90"
             >
               {pending ? "Cancelling…" : "Yes, cancel this visit"}
             </Button>
             <button
               type="button"
               onClick={() => setMode("idle")}
-              className="text-sm font-semibold text-[#53627a] hover:text-[#0a2540]"
+              className="text-sm font-semibold text-ink-3 hover:text-ink"
             >
               Keep my appointment
             </button>
@@ -260,9 +254,9 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
       ) : null}
 
       {error ? (
-        <div className="border-t border-[#e6ebf1] px-5 py-4 sm:px-7">
-          <Alert className="border-[#f3c4c0] bg-[#fff0ef] text-[#9f3f38]">
-            <AlertDescription className="text-[#9f3f38]">
+        <div className="border-t border-line-2 px-5 py-4 sm:px-7">
+          <Alert className="border-err-line bg-err-bg text-err">
+            <AlertDescription className="text-err">
               {error}
             </AlertDescription>
           </Alert>
