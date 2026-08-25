@@ -6,19 +6,13 @@ import { useMemo, useState } from "react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { buildFallbackSlots, type FallbackSlotDaySpec } from "@/lib/clipper/fallback-slots";
 import { formatShortDate, formatTime } from "@/lib/clipper/format";
 import type { AppointmentDetails } from "@/lib/clipper/types";
 import { cn } from "@/lib/utils";
 
 type ManageAppointmentProps = {
   appointment: AppointmentDetails;
-};
-
-type Slot = {
-  startsAt: string;
-  dateKey: string;
-  dateLabel: string;
-  timeLabel: string;
 };
 
 const INK = "#0a2540";
@@ -31,34 +25,10 @@ const ACCENT = "#635bff";
  */
 const SLOT_HOURS = [9, 11, 13, 15];
 const SLOT_DAYS = 10;
-
-function buildSlots(from: Date): Slot[] {
-  const slots: Slot[] = [];
-  for (let dayOffset = 1; dayOffset <= SLOT_DAYS; dayOffset += 1) {
-    const day = new Date(from);
-    day.setUTCDate(day.getUTCDate() + dayOffset);
-    for (const hour of SLOT_HOURS) {
-      const start = new Date(
-        Date.UTC(
-          day.getUTCFullYear(),
-          day.getUTCMonth(),
-          day.getUTCDate(),
-          hour,
-          0,
-          0,
-        ),
-      );
-      const startsAt = start.toISOString();
-      slots.push({
-        startsAt,
-        dateKey: startsAt.slice(0, 10),
-        dateLabel: formatShortDate(startsAt),
-        timeLabel: formatTime(startsAt),
-      });
-    }
-  }
-  return slots;
-}
+const FALLBACK_SLOT_DAY_SPECS: FallbackSlotDaySpec[] = Array.from({ length: SLOT_DAYS }, (_, index) => ({
+  dayOffset: index + 1,
+  hours: SLOT_HOURS,
+}));
 
 export function ManageAppointment({ appointment }: ManageAppointmentProps) {
   const router = useRouter();
@@ -73,8 +43,8 @@ export function ManageAppointment({ appointment }: ManageAppointmentProps) {
   const locked = isCancelled || isPast;
 
   const groupedSlots = useMemo(() => {
-    const groups = new Map<string, Slot[]>();
-    for (const slot of buildSlots(new Date())) {
+    const groups = new Map<string, ReturnType<typeof buildFallbackSlots>>();
+    for (const slot of buildFallbackSlots(new Date(), FALLBACK_SLOT_DAY_SPECS)) {
       if (slot.startsAt === appointment.startsAt) continue;
       const bucket = groups.get(slot.dateKey);
       if (bucket) bucket.push(slot);
