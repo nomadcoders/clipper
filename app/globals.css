@@ -103,3 +103,124 @@ a {
   border-color: #e2e8f0 !important;
   box-shadow: 0 28px 80px rgb(38 46 77 / 12%) !important;
 }
+
+.dark .clipper-booking--prism {
+  border-color: var(--bd-dbe3ef);
+  background: var(--bg-f7f9fc);
+}
+
+.dark .clipper-booking--prism > div > div:last-child {
+  border-color: var(--bd-dbe3ef) !important;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 40%) !important;
+}
+
+/* Page palette: light values are the original design colors; .dark remaps them. */
+:root {
+  --bd-0a2540: #0a2540;
+  --bd-25231e: #25231e;
+  --bd-635bff: #635bff;
+  --bd-705cf6: #705cf6;
+  --bd-bfe8db: #bfe8db;
+  --bd-cbd8ff: #cbd8ff;
+  --bd-d9e2ec: #d9e2ec;
+  --bd-dbe3ef: #dbe3ef;
+  --bd-ded2c2: #ded2c2;
+  --bd-e4d5a3: #e4d5a3;
+  --bd-e6ebf1: #e6ebf1;
+  --bd-eadbd6: #eadbd6;
+  --bd-f3aaa0: #f3aaa0;
+  --bd-f3c4c0: #f3c4c0;
+  --bd-ff6b58: #ff6b58;
+  --bg-0a2540: #0a2540;
+  --bg-202321: #202321;
+  --bg-25231e: #25231e;
+  --bg-635bff: #635bff;
+  --bg-e7f8f1: #e7f8f1;
+  --bg-eef1ff: #eef1ff;
+  --bg-f4e2d6: #f4e2d6;
+  --bg-f7f0e6: #f7f0e6;
+  --bg-f7f9fc: #f7f9fc;
+  --bg-ff6b58: #ff6b58;
+  --bg-fff0ef: #fff0ef;
+  --bg-fff3f0: #fff3f0;
+  --bg-fff8dc: #fff8dc;
+  --bg-fff8f4: #fff8f4;
+  --bg-fffaf3: #fffaf3;
+  --bg-ffffff: #ffffff;
+  --fg-08775d: #08775d;
+  --fg-0a2540: #0a2540;
+  --fg-202321: #202321;
+  --fg-25231e: #25231e;
+  --fg-425466: #425466;
+  --fg-4353a3: #4353a3;
+  --fg-53627a: #53627a;
+  --fg-635bff: #635bff;
+  --fg-686157: #686157;
+  --fg-766b61: #766b61;
+  --fg-775d13: #775d13;
+  --fg-80e9ff: #80e9ff;
+  --fg-8898aa: #8898aa;
+  --fg-8f3d30: #8f3d30;
+  --fg-9f3f38: #9f3f38;
+  --fg-adbdcc: #adbdcc;
+  --fg-b94f3e: #b94f3e;
+  --fg-d6e2ec: #d6e2ec;
+  --fg-ff6b58: #ff6b58;
+  --fg-fff8e9: #fff8e9;
+  --fg-fffaf3: #fffaf3;
+}
+
+.dark {
+  --bd-0a2540: hsl(210 22% 85%);
+  --bd-25231e: hsl(43 3% 85%);
+  --bd-635bff: #635bff;
+  --bd-705cf6: #705cf6;
+  --bd-bfe8db: hsl(161 16% 26%);
+  --bd-cbd8ff: hsl(225 35% 22%);
+  --bd-d9e2ec: hsl(212 12% 23%);
+  --bd-dbe3ef: hsl(216 13% 22%);
+  --bd-ded2c2: hsl(34 10% 27%);
+  --bd-e4d5a3: hsl(46 19% 30%);
+  --bd-e6ebf1: hsl(213 10% 21%);
+  --bd-eadbd6: hsl(15 11% 23%);
+  --bd-f3aaa0: hsl(7 27% 29%);
+  --bd-f3c4c0: hsl(5 24% 25%);
+  --bd-ff6b58: #ff6b58;
+  --bg-0a2540: hsl(210 58% 24%);
+  --bg-202321: hsl(140 4% 22%);
+  --bg-25231e: hsl(43 8% 22%);
+  --bg-635bff: #635bff;
+  --bg-e7f8f1: hsl(155 19% 12%);
+  --bg-eef1ff: hsl(229 35% 10%);
+  --bg-f4e2d6: hsl(24 20% 16%);
+  --bg-f7f0e6: hsl(35 14% 7%);
+  --bg-f7f9fc: hsl(216 18% 7%);
+  --bg-ff6b58: #ff6b58;
+  --bg-fff0ef: hsl(4 35% 10%);
+  --bg-fff3f0: hsl(12 35% 10%);
+  --bg-fff8dc: hsl(48 35% 13%);
+  --bg-fff8f4: hsl(22 35% 9%);
+  --bg-fffaf3: hsl(35 35% 9%);
+  --bg-ffffff: hsl(216 14% 11%);
+  --fg-08775d: hsl(160 55% 60%);
+  --fg-0a2540: hsl(210 29% 90%);
+  --fg-202321: hsl(140 2% 90%);
+  --fg-25231e: hsl(43 4% 90%);
+  --fg-425466: hsl(210 13% 63%);
+  --fg-4353a3: hsl(230 25% 75%);
+  --fg-53627a: hsl(217 11% 70%);
+  --fg-635bff: #a29dff;
+  --fg-686157: hsl(35 5% 67%);
+  --fg-766b61: hsl(29 6% 72%);
+  --fg-775d13: hsl(44 60% 65%);
+  --fg-80e9ff: #80e9ff;
+  --fg-8898aa: hsl(212 17% 65%);
+  --fg-8f3d30: hsl(8 60% 70%);
+  --fg-9f3f38: hsl(4 65% 72%);
+  --fg-adbdcc: hsl(209 23% 79%);
+  --fg-b94f3e: hsl(8 75% 72%);
+  --fg-d6e2ec: #d6e2ec;
+  --fg-ff6b58: #ff6b58;
+  --fg-fff8e9: #fff8e9;
+  --fg-fffaf3: #fffaf3;
+}

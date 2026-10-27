@@ -35,7 +35,7 @@
     "tailwindcss": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "wrangler": "^4.123.0"
+    "wrangler": "^4.142.0"
   },
   "type": "module",
   "scripts": {
@@ -45,7 +45,7 @@
     "deploy": "vinext-cloudflare deploy --config dist/server/wrangler.json",
     "preview": "npm run build && npm run start --",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./worker-configuration.d.ts",
-    "db:migrate:local": "node scripts/migrate-local-d1.mjs",
-    "db:seed:local": "node scripts/seed-local-d1.mjs"
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --config wrangler.jsonc",
+    "db:seed:local": "wrangler d1 execute DB --local --file=scripts/seed.sql --config wrangler.jsonc"
   }
 }
