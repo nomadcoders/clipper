@@ -4,7 +4,7 @@ const command = process.platform === "win32" ? "npx.cmd" : "npx";
 const result = spawnSync(
   command,
   ["wrangler", "d1", "execute", "DB", "--local", "--file=scripts/seed.sql", "--config", "wrangler.jsonc"],
-  { cwd: process.cwd(), stdio: "inherit" },
+  { cwd: process.cwd(), stdio: "inherit", shell:true },
 );
 
 if (result.error) throw result.error;

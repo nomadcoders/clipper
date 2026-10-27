@@ -1,11 +1,19 @@
+import { env } from "cloudflare:workers";
 import { eq } from "drizzle-orm";
 
-import {
-  appointments,
-  groomingPackages,
-} from "@/db/schema";
+import { groomingPackages } from "@/db/schema";
 import { findAvailableGroomer } from "@/lib/clipper/data";
 import { getDatabase } from "@/lib/clipper/db";
+
+// 32 characters, so a random byte masked to 5 bits maps without modulo bias.
+const REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function generateBookingReference(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(8));
+  const code = Array.from(bytes, (byte) => REFERENCE_ALPHABET[byte & 31]);
+
+  return `CLP-${code.join("")}`;
+}
 
 type BookingRequest = {
   petName?: unknown;
@@ -99,39 +107,59 @@ export async function POST(request: Request) {
   }
 
   const now = new Date();
-  const bookingReference = `CLP-${Math.random()
-    .toString(36)
-    .slice(2, 8)
-    .toUpperCase()}`;
-  const appointmentId = `apt_${Date.now()}_${Math.random()
-    .toString(36)
-    .slice(2, 7)}`;
+  const bookingReference = generateBookingReference();
+  const appointmentId = `apt_${crypto.randomUUID()}`;
 
-  await db.insert(appointments).values({
-    id: appointmentId,
-    bookingReference,
-    petName: petName.trim(),
-    petBreed: petBreed.trim(),
-    groomerId,
-    packageId,
-    address: address.trim(),
-    neighborhood: neighborhood.trim(),
-    startsAt,
-    endsAt,
-    status: "confirmed",
-    priceCents: groomingPackage.priceCents,
-    notes: null,
-    createdAt: now,
-    updatedAt: now,
-  });
-
-  // log it, don't make the customer wait for it
-  Promise.resolve().then(() => {
-    console.info("Clipper booking created", {
+  // Insert only if the groomer is still free, in one statement, so two
+  // concurrent requests cannot double-book the same slot.
+  const result = await env.DB.prepare(
+    `INSERT INTO appointments (
+       id, booking_reference, pet_name, pet_breed, groomer_id, package_id,
+       address, neighborhood, starts_at, ends_at, status, price_cents,
+       notes, created_at, updated_at
+     )
+     SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?, NULL, ?, ?
+     WHERE NOT EXISTS (
+       SELECT 1 FROM appointments
+       WHERE groomer_id = ?
+         AND starts_at < ?
+         AND ends_at > ?
+         AND status <> 'cancelled'
+     )`,
+  )
+    .bind(
+      appointmentId,
       bookingReference,
-      petName: petName.trim(),
-    });
-  });
+      petName.trim(),
+      petBreed.trim(),
+      groomerId,
+      packageId,
+      address.trim(),
+      neighborhood.trim(),
+      startsAt.getTime(),
+      endsAt.getTime(),
+      groomingPackage.priceCents,
+      now.getTime(),
+      now.getTime(),
+      groomerId,
+      endsAt.getTime(),
+      startsAt.getTime(),
+    )
+    .run();
+
+  if (result.meta.changes === 0) {
+    return Response.json(
+      {
+        ok: false,
+        error: "No groomer is available for that neighborhood and time.",
+      },
+      { status: 409 },
+    );
+  }
+
+  console.info(
+    JSON.stringify({ message: "booking created", bookingReference, appointmentId }),
+  );
 
   return Response.json({ ok: true, reference: bookingReference });
 }
