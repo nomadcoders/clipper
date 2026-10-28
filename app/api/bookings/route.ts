@@ -65,6 +65,14 @@ export async function POST(request: Request) {
     );
   }
 
+  // Mirrors the <Input maxLength> limits on the booking form.
+  if (petName.trim().length > 60 || address.trim().length > 200) {
+    return Response.json(
+      { ok: false, error: "Pet name or address is too long." },
+      { status: 400 },
+    );
+  }
+
   const db = getDatabase();
   const [groomingPackage] = await db
     .select()

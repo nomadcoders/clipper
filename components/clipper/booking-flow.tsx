@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { Alert, AlertDescription, Button, Input } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -147,7 +147,8 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
     setDurationMinutes(selectedPackage?.durationMinutes ?? 0);
   }, [selectedPackage]);
 
-  function validateAndSubmit() {
+  function validateAndSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (!petName.trim() || !petBreed || !selectedPackageId || !selectedNeighborhood || !address || !selectedSlot) {
       setFormError("Please complete each step before booking your Clipper visit.");
       return;
@@ -190,14 +191,14 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
           </div>
 
           <div className={cn("overflow-hidden border bg-white", prism ? "rounded-2xl border-[#dbe3ef] shadow-[0_32px_90px_rgb(38_46_77/12%)]" : "rounded-xl border-[#eadbd6] shadow-[0_32px_90px_rgb(66_35_45/10%)] lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]")}>
-            <div className={cn("grid", prism ? "lg:grid-cols-[minmax(0,1fr)_20rem]" : "lg:grid-cols-[minmax(0,1fr)_19rem]")}>
+            <form onSubmit={validateAndSubmit} className={cn("grid", prism ? "lg:grid-cols-[minmax(0,1fr)_20rem]" : "lg:grid-cols-[minmax(0,1fr)_19rem]")}>
               <div className="space-y-10 p-5 sm:p-8 lg:p-10">
                 {formError && <Alert className="border-[#f3aaa0] bg-[#fff3f0] text-[#8f3d30]"><AlertDescription>{formError}</AlertDescription></Alert>}
                 {loadingOptions && <p className="text-xs font-semibold text-[#8898aa]">Checking this week’s available routes…</p>}
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>1. Who are we grooming?</legend>
-                  <div className="grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-[#53627a]">Pet name<Input aria-label="Pet name" value={petName} onChange={(event) => setPetName(event.target.value)} placeholder="e.g. Luna" className="mt-2 h-12 rounded-md border-[#dbe3ef] bg-white px-4 text-base font-normal text-[#0a2540] focus-visible:ring-[#635bff]" /></label><label className="text-xs font-bold text-[#53627a]">Breed<select aria-label="Breed" value={petBreed} onChange={(event) => setPetBreed(event.target.value)} className="mt-2 h-12 w-full rounded-md border border-[#dbe3ef] bg-white px-4 text-base font-normal text-[#0a2540] outline-none focus:border-[#635bff]"><option value="">Choose a breed</option><option>Golden Retriever</option><option>Labrador Retriever</option><option>French Bulldog</option><option>German Shepherd</option><option>Poodle</option><option>Miniature Poodle</option><option>Pomeranian</option><option>Shiba Inu</option><option>Welsh Corgi</option><option>Yorkshire Terrier</option><option>Mixed Breed</option></select></label></div>
+                  <div className="grid gap-3 sm:grid-cols-2"><label className="text-xs font-bold text-[#53627a]">Pet name<Input aria-label="Pet name" name="petName" required maxLength={60} autoComplete="off" value={petName} onChange={(event) => setPetName(event.target.value)} placeholder="e.g. Luna" className="mt-2 h-12 rounded-md border-[#dbe3ef] bg-white px-4 text-base font-normal text-[#0a2540] focus-visible:ring-[#635bff]" /></label><label className="text-xs font-bold text-[#53627a]">Breed<select aria-label="Breed" name="petBreed" required value={petBreed} onChange={(event) => setPetBreed(event.target.value)} className="mt-2 h-12 w-full rounded-md border border-[#dbe3ef] bg-white px-4 text-base font-normal text-[#0a2540] outline-none focus:border-[#635bff]"><option value="">Choose a breed</option><option>Golden Retriever</option><option>Labrador Retriever</option><option>French Bulldog</option><option>German Shepherd</option><option>Poodle</option><option>Miniature Poodle</option><option>Pomeranian</option><option>Shiba Inu</option><option>Welsh Corgi</option><option>Yorkshire Terrier</option><option>Mixed Breed</option></select></label></div>
                 </fieldset>
 
                 <fieldset>
@@ -207,8 +208,8 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
-                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-[#dbe3ef] bg-white px-4 focus-visible:ring-[#705cf6]" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-[#dbe3ef] bg-white px-4 text-sm outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
-                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-[#dbe3ef] bg-white px-4" />
+                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" name="address" required maxLength={200} autoComplete="street-address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-[#dbe3ef] bg-white px-4 focus-visible:ring-[#705cf6]" /><select aria-label="Neighborhood" name="neighborhood" required value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-[#dbe3ef] bg-white px-4 text-sm outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
+                  <Input name="unit" maxLength={100} autoComplete="address-line2" placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-[#dbe3ef] bg-white px-4" />
                 </fieldset>
 
                 <fieldset>
@@ -225,11 +226,11 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
                   <p className="mt-1 text-sm text-[#53627a]">{selectedPackage?.name ?? "Choose a service"}</p>
                   <dl className="mt-7 space-y-4 border-y border-[#dbe3ef] py-5 text-sm"><div className="flex justify-between gap-3"><dt className="text-[#8898aa]">Arrival</dt><dd className="text-right font-semibold" style={{ color: ink }}>{selectedSlot ? `${selectedSlot.dateLabel}, ${selectedSlot.timeLabel}` : "Not selected"}</dd></div><div className="flex justify-between"><dt className="text-[#8898aa]">Duration</dt><dd className="font-semibold" style={{ color: ink }}>{durationMinutes} min</dd></div><div className="flex justify-between"><dt className="text-[#8898aa]">Neighborhood</dt><dd className="font-semibold" style={{ color: ink }}>{selectedNeighborhood || "Not selected"}</dd></div></dl>
                   <div className="my-6 flex items-end justify-between"><span className="text-sm font-semibold text-[#53627a]">Total</span><span className="text-3xl font-bold tracking-[-0.05em]" style={{ color: ink }}>{formatMoney(totalPrice)}</span></div>
-                  <Button type="button" onClick={validateAndSubmit} disabled={submitting || loadingOptions} className="h-12 w-full rounded-md text-sm font-bold !text-white shadow-none" style={{ background: accent }}>{submitting ? "Saving your spot…" : "Confirm visit →"}</Button>
+                  <Button type="submit" disabled={submitting || loadingOptions} className="h-12 w-full rounded-md text-sm font-bold !text-white shadow-none" style={{ background: accent }}>{submitting ? "Saving your spot…" : "Confirm visit →"}</Button>
                   <p className="mt-3 text-center text-[0.68rem] leading-5 text-[#8898aa]">No charge until your groomer is confirmed.</p>
                 </div>
               </aside>
-            </div>
+            </form>
           </div>
         </div>
       </section>
