@@ -13,6 +13,7 @@ type BookingRequest = {
   packageId?: unknown;
   neighborhood?: unknown;
   address?: unknown;
+  unit?: unknown;
   startsAt?: unknown;
 };
 
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
   const packageId = input.packageId as string;
   const neighborhood = input.neighborhood as string;
   const address = input.address as string;
+  const unit = typeof input.unit === "string" ? input.unit.trim() : "";
   const startsAt = new Date(input.startsAt as string);
 
   if (Number.isNaN(startsAt.getTime())) {
@@ -120,7 +122,7 @@ export async function POST(request: Request) {
     endsAt,
     status: "confirmed",
     priceCents: groomingPackage.priceCents,
-    notes: null,
+    notes: unit ? `Unit/access: ${unit}` : null,
     createdAt: now,
     updatedAt: now,
   });

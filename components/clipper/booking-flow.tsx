@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Alert, AlertDescription, Button, Input } from "@/components/ui";
+import { Alert, AlertDescription, Button, Input, Label } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 type PackageOption = {
@@ -103,6 +103,7 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
   const [selectedPackageId, setSelectedPackageId] = useState("pkg_full_groom");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("Itaewon");
   const [address, setAddress] = useState("42 Itaewon-ro 27ga-gil");
+  const [unit, setUnit] = useState("");
   const [selectedSlotId, setSelectedSlotId] = useState("fallback-fri-10");
   const [totalPrice, setTotalPrice] = useState(95000);
   const [durationMinutes, setDurationMinutes] = useState(90);
@@ -157,7 +158,7 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
     fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ petName: petName.trim(), petBreed, packageId: selectedPackageId, neighborhood: selectedNeighborhood, address, startsAt: selectedSlot.startsAt, endsAt: selectedSlot.endsAt, priceCents: totalPrice, durationMinutes }),
+      body: JSON.stringify({ petName: petName.trim(), petBreed, packageId: selectedPackageId, neighborhood: selectedNeighborhood, address, unit: unit.trim(), startsAt: selectedSlot.startsAt, endsAt: selectedSlot.endsAt, priceCents: totalPrice, durationMinutes }),
     })
       .then((response) => {
         if (!response.ok) throw new Error("Could not create booking");
@@ -207,8 +208,20 @@ export function BookingFlow({ sectionId = "book", variant = "prism", theme = { i
 
                 <fieldset>
                   <legend className="mb-4 text-lg font-bold tracking-[-0.025em]" style={{ color: ink }}>3. Where should we arrive?</legend>
-                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]"><Input aria-label="Street address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="h-12 rounded-md border-[#dbe3ef] bg-white px-4 focus-visible:ring-[#705cf6]" /><select aria-label="Neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="h-12 rounded-md border border-[#dbe3ef] bg-white px-4 text-sm outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select></div>
-                  <Input placeholder="Apartment, floor, or gate code (optional)" className="mt-3 h-11 rounded-md border-[#dbe3ef] bg-white px-4" />
+                  <div className="grid gap-3 sm:grid-cols-[1.25fr_0.75fr]">
+                    <div>
+                      <Label htmlFor="booking-address" className="text-xs font-bold text-[#53627a]">Street address</Label>
+                      <Input id="booking-address" value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street address" className="mt-2 h-12 rounded-md border-[#dbe3ef] bg-white px-4 focus-visible:ring-[#705cf6]" />
+                    </div>
+                    <div>
+                      <Label htmlFor="booking-neighborhood" className="text-xs font-bold text-[#53627a]">Neighborhood</Label>
+                      <select id="booking-neighborhood" value={selectedNeighborhood} onChange={(event) => setSelectedNeighborhood(event.target.value)} className="mt-2 h-12 w-full rounded-md border border-[#dbe3ef] bg-white px-4 text-sm outline-none"><option value="">Neighborhood</option>{neighborhoods.map((neighborhood) => <option key={neighborhood} value={neighborhood}>{neighborhood}</option>)}</select>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <Label htmlFor="booking-unit" className="text-xs font-bold text-[#53627a]">Apartment, floor, or gate code (optional)</Label>
+                    <Input id="booking-unit" value={unit} onChange={(event) => setUnit(event.target.value)} placeholder="Apartment, floor, or gate code (optional)" className="mt-2 h-11 rounded-md border-[#dbe3ef] bg-white px-4" />
+                  </div>
                 </fieldset>
 
                 <fieldset>
